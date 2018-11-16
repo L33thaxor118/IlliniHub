@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
@@ -36,7 +35,8 @@ public abstract class LocationActivity extends Activity implements OnMapReadyCal
     if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
         != PackageManager.PERMISSION_GRANTED) {
       // Request fine location permissions if the app does not already have them
-      ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.ACCESS_FINE_LOCATION }, 0);
+      ActivityCompat.requestPermissions(
+          this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 0);
     } else {
       // If permissions are already granted, initialize the map view
       initMapView();
@@ -44,7 +44,8 @@ public abstract class LocationActivity extends Activity implements OnMapReadyCal
   }
 
   @Override
-  public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+  public void onRequestPermissionsResult(
+      int requestCode, String[] permissions, int[] grantResults) {
     switch (requestCode) {
       case FINE_LOCATION_PERMISSION:
         // Check if the user has granted the app location permissions

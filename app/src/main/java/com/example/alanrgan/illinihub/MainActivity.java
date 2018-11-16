@@ -27,11 +27,11 @@ public class MainActivity extends LocationActivity {
     locationStore.onDataUpdated((obj, coord) -> {
       // All UI modifications need to be run on the UI thread with
       // the following function
-      runOnUiThread(() -> {
-        mapboxMap.addMarker(new MarkerOptions()
-            .position(coord)
-            .title("Async marker"));
-      });
+      runOnUiThread(() -> mapboxMap.addMarker(
+        new MarkerOptions()
+          .position(coord)
+          .title("Async marker")
+      ));
     });
 
     // Start the polling after mapboxMap exists
