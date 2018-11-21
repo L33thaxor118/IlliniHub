@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">IlliniHub</string>
     <string name="mapbox_access_token">pk.eyJ1IjoiYXpyaWVsYTIiLCJhIjoiY2ptc2JreHZnMG9pdTNwcDJseHZxOGYzNiJ9.jBZkayB0f3XNn_5A1Jvu9g</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="filter_drawer_placeholder">Filter drawer placeholder</string>
 </resources>

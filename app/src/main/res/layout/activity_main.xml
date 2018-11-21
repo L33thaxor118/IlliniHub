@@ -26,13 +26,13 @@
     <ScrollView
         android:id="@+id/bottomSlideHandle"
         android:layout_width="match_parent"
-        android:layout_height="27dp"
+        android:layout_height="24dp"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="484dp"
         app:layout_constraintBottom_toBottomOf="@+id/mapView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintStart_toEndOf="parent"
-        android:background="@color/mapbox_blue">
+        android:background="@android:color/white">
 
         <!-- Not exactly sure why we need LinearLayout, but it is the default
         child of ScrollView -->
@@ -40,9 +40,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
-            android:orientation="vertical" />
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_more_horiz_gray_24dp"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
     </ScrollView>
 
-    <!-- Right now, this is just all blue, but we can add our filter logic here -->
-    <include layout="@layout/slide_layout" />
+    <!--
+        To include a fragment in the main activity, we just add it here with
+        the <fragment> tag and specify the associated class with android:name.
+    -->
+    <fragment
+        android:id="@+id/filterDrawer"
+        android:name="com.example.alanrgan.illinihub.FilterDrawerFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </android.support.constraint.ConstraintLayout>
