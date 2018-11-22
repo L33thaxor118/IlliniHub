@@ -15,6 +15,8 @@ public abstract class LocationActivity extends Activity implements OnMapReadyCal
   protected MapView mapView;
   private Bundle savedState;
   private final int FINE_LOCATION_PERMISSION = 0;
+  protected Database db;
+
 
   private void initMapView() {
     Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
@@ -31,6 +33,7 @@ public abstract class LocationActivity extends Activity implements OnMapReadyCal
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     savedState = savedInstanceState;
+    db = Database.getDatabase(getApplicationContext());
     // Check if we need to prompt the user for permissions
     if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
         != PackageManager.PERMISSION_GRANTED) {
