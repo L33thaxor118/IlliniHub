@@ -10,7 +10,7 @@
             android:id="@+id/minusButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:background="@color/mapbox_blue"
+            android:background="@android:color/darker_gray"
             android:text="-"
             android:textColor="@android:color/white"
             android:textSize="22sp" />
@@ -20,6 +20,7 @@
             android:layout_toRightOf="@+id/minusButton"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
+            android:minWidth="90dp"
             android:text="Hello World"
             android:layout_gravity="center"
             android:gravity="center"
@@ -34,7 +35,7 @@
             android:layout_toRightOf="@+id/radiusLabel"
             android:layout_marginEnd="0dp"
             android:layout_marginRight="0dp"
-            android:background="@color/mapbox_blue"
+            android:background="@android:color/darker_gray"
             android:text="+"
             android:textColor="@android:color/white"
             android:textSize="22sp" />

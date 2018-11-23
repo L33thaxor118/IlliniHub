@@ -17,6 +17,7 @@
         mapbox:mapbox_styleUrl="@string/mapbox_style_mapbox_streets" />
 
     <com.example.alanrgan.illinihub.RadiusActionBar
+        android:id="@+id/radiusActionBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"

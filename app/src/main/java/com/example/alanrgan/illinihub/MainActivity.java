@@ -25,6 +25,7 @@ import java.util.List;
 // in order to communicate events
 public class MainActivity extends LocationActivity implements FilterDrawerFragment.OnFragmentInteractionListener {
   private LocationStore locationStore;
+  private RadiusActionBar radiusActionBar;
   private SlideUp slideUp;
   private MapboxMap map;
   private View filterDrawer;
@@ -46,6 +47,7 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
     super.onCreate(savedInstanceState);
     locationStore = new LocationStore();
 
+    radiusActionBar = findViewById(R.id.radiusActionBar);
     initializeSlideUp();
 
     //Testing database connection
@@ -77,6 +79,11 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
     //Creating marker with event retrieved from Database
     List<Event> dbEvents = db.eventDao().getAll();
     addMarker(dbEvents.get(0));
+
+    radiusActionBar.onRadiusChange((obs, radius) -> {
+      // TODO: Handle updating of discovery radius on mapboxMap here
+      System.out.printf("Radius changed to %1.1f\n", radius);
+    });
 
     // Start the polling after mapboxMap exists
     locationStore.run();

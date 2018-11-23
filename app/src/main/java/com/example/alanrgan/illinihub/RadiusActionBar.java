@@ -8,10 +8,15 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.alanrgan.illinihub.util.Observable;
+import com.example.alanrgan.illinihub.util.Observer;
+
 public class RadiusActionBar extends RelativeLayout {
   private Button plusButton;
   private Button minusButton;
   private TextView radiusLabel;
+
+  private Observable<Double> radiusChangeObservable = new Observable<>();
 
   private final double[] radii = {0.3, 0.5, 1.0, 1.3, 2.0, 2.5, 3.0};
 
@@ -41,8 +46,13 @@ public class RadiusActionBar extends RelativeLayout {
     updateRadiusLabel();
   }
 
+  public void onRadiusChange(Observer<Double> observer) {
+    radiusChangeObservable.addObserver(observer);
+  }
+
   private void updateRadiusLabel() {
-    radiusLabel.setText(String.format("Radius: %1.1f", radii[radiusIdx]));
+    radiusLabel.setText(String.format("Radius:\n%1.1f", radii[radiusIdx]));
+    radiusChangeObservable.notifyObservers(radii[radiusIdx]);
   }
 
   private void incrementAndUpdateLabel() {
