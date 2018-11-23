@@ -9,7 +9,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.location.LocationComponent;
+import com.mapbox.mapboxsdk.location.modes.CameraMode;
+import com.mapbox.mapboxsdk.location.modes.RenderMode;
 import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
 // In order to use fragments, we need to use AppCompatActivity or FragmentActivity
@@ -59,6 +63,18 @@ public abstract class LocationActivity extends AppCompatActivity implements OnMa
         }
       default:
         break;
+    }
+  }
+
+  @Override
+  public void onMapReady(final MapboxMap mapboxMap) {
+    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        == PackageManager.PERMISSION_GRANTED) {
+      LocationComponent locationComponent = mapboxMap.getLocationComponent();
+      locationComponent.activateLocationComponent(this);
+      locationComponent.setLocationComponentEnabled(true);
+      locationComponent.setCameraMode(CameraMode.TRACKING);
+      locationComponent.setRenderMode(RenderMode.NORMAL);
     }
   }
 

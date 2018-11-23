@@ -45,6 +45,8 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
 
   @Override
   public void onMapReady(final MapboxMap mapboxMap) {
+    super.onMapReady(mapboxMap);
+
     map = mapboxMap;
     // The map will be created AFTER the user grants location permissions
     addMainMarker();
