@@ -12,6 +12,8 @@ import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 
+import java.util.List;
+
 // MainActivity MUST implement FilterDrawerFragment listener interface
 // in order to communicate events
 public class MainActivity extends LocationActivity implements FilterDrawerFragment.OnFragmentInteractionListener {
@@ -29,6 +31,16 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
     locationStore = new LocationStore();
 
     initializeSlideUp();
+
+    //Testing database connection
+    Event e = new Event();
+    db.eventDao().deleteAll();
+    e.title = "test";
+    e.description = "testing";
+    e.latitude = 40.107;
+    e.longitude = -88.227;
+    e.tags = "none";
+    db.eventDao().insertAll(e);
   }
 
   @Override
@@ -47,6 +59,12 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
             .title("Async marker")
       ));
     });
+
+    //Creating marker with event retrieved from Database
+    List<Event> dbEvents = db.eventDao().getAll();
+    mapboxMap.addMarker(new MarkerOptions()
+              .position(new LatLng(dbEvents.get(0).latitude, dbEvents.get(0).longitude))
+              .title(dbEvents.get(0).title));
 
     // Start the polling after mapboxMap exists
     locationStore.run();
