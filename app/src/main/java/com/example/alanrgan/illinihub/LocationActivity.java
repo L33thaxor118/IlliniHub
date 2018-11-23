@@ -1,17 +1,19 @@
 package com.example.alanrgan.illinihub;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
-public abstract class LocationActivity extends Activity implements OnMapReadyCallback {
+// In order to use fragments, we need to use AppCompatActivity or FragmentActivity
+public abstract class LocationActivity extends AppCompatActivity implements OnMapReadyCallback {
   protected MapView mapView;
   private Bundle savedState;
   private final int FINE_LOCATION_PERMISSION = 0;

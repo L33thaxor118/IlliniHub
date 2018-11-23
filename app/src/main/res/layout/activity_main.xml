@@ -14,6 +14,50 @@
         mapbox:mapbox_styleUrl="@string/mapbox_style_mapbox_streets"
         mapbox:mapbox_cameraTargetLat="40.107601"
         mapbox:mapbox_cameraTargetLng="-88.227133"
-        mapbox:mapbox_cameraZoom="17" />
+        mapbox:mapbox_cameraZoom="17" >
 
+    </com.mapbox.mapboxsdk.maps.MapView>
+
+    <!--
+        There is some ConstraintLayout black magic at play here.
+        app:layout_constraintStart_to<Start/End>Of="parent" ensures that
+        the layout stretches the entire width of the screen.
+    -->
+    <ScrollView
+        android:id="@+id/bottomSlideHandle"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="484dp"
+        app:layout_constraintBottom_toBottomOf="@+id/mapView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        android:background="@android:color/white">
+
+        <!-- Not exactly sure why we need LinearLayout, but it is the default
+        child of ScrollView -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_more_horiz_gray_24dp"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!--
+        To include a fragment in the main activity, we just add it here with
+        the <fragment> tag and specify the associated class with android:name.
+    -->
+    <fragment
+        android:id="@+id/filterDrawer"
+        android:name="com.example.alanrgan.illinihub.FilterDrawerFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </android.support.constraint.ConstraintLayout>
