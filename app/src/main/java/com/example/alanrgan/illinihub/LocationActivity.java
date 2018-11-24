@@ -8,6 +8,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
+import com.mapbox.android.core.location.LocationEngine;
+import com.mapbox.android.core.location.LocationEngineListener;
+import com.mapbox.android.core.location.LocationEnginePriority;
+import com.mapbox.android.core.location.LocationEngineProvider;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.modes.CameraMode;
@@ -17,12 +21,15 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
 // In order to use fragments, we need to use AppCompatActivity or FragmentActivity
-public abstract class LocationActivity extends AppCompatActivity implements OnMapReadyCallback {
+public abstract class LocationActivity extends AppCompatActivity
+    implements OnMapReadyCallback, LocationEngineListener {
   protected MapView mapView;
   private Bundle savedState;
   private final int FINE_LOCATION_PERMISSION = 0;
   protected Database db;
 
+  protected LocationComponent locationComponent;
+  protected LocationEngine locationEngine;
 
   private void initMapView() {
     Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
@@ -67,15 +74,22 @@ public abstract class LocationActivity extends AppCompatActivity implements OnMa
   }
 
   @Override
+  public void onConnected() {
+    locationEngine.requestLocationUpdates();
+  }
+
+  @Override
   public void onMapReady(final MapboxMap mapboxMap) {
-    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-        == PackageManager.PERMISSION_GRANTED) {
-      LocationComponent locationComponent = mapboxMap.getLocationComponent();
-      locationComponent.activateLocationComponent(this);
-      locationComponent.setLocationComponentEnabled(true);
-      locationComponent.setCameraMode(CameraMode.TRACKING);
-      locationComponent.setRenderMode(RenderMode.NORMAL);
-    }
+    locationEngine = new LocationEngineProvider(this).obtainBestLocationEngineAvailable();
+    locationEngine.addLocationEngineListener(this);
+    locationEngine.setPriority(LocationEnginePriority.HIGH_ACCURACY);
+    locationEngine.activate();
+
+    locationComponent = mapboxMap.getLocationComponent();
+    locationComponent.activateLocationComponent(this);
+    locationComponent.setLocationComponentEnabled(true);
+    locationComponent.setCameraMode(CameraMode.TRACKING);
+    locationComponent.setRenderMode(RenderMode.NORMAL);
   }
 
   @Override
