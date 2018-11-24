@@ -56,7 +56,7 @@ public class RadiusActionBar extends RelativeLayout {
   }
 
   private void updateRadiusLabel() {
-    radiusLabel.setText(String.format("Radius:\n%1.2f", radii[radiusIdx]));
+    radiusLabel.setText(String.format("Radius:\n%1.2f mi", radii[radiusIdx]));
     radiusChangeObservable.notifyObservers(radii[radiusIdx]);
   }
 
