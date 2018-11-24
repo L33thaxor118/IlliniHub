@@ -1,5 +1,6 @@
 package com.example.alanrgan.illinihub;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
@@ -70,6 +71,12 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
 
     // Start the polling after mapboxMap exists
     locationStore.run();
+  }
+
+  @Override
+  public void onLocationChanged(Location location) {
+    // TODO: Render discovery radius here
+    System.out.println("Location changed to " + location.toString());
   }
 
   private void addMainMarker() {
