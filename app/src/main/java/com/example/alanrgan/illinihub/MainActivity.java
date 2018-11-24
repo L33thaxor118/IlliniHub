@@ -8,6 +8,8 @@ import android.view.View;
 
 import com.mancj.slideup.SlideUp;
 import com.mancj.slideup.SlideUpBuilder;
+import com.mapbox.mapboxsdk.annotations.Icon;
+import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -25,6 +27,14 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
 
   // Temporary variables to demonstrate interaction between fragment and MainActivity
   private Marker quadMarker;
+
+  private enum MarkerColor {
+    BLUE,
+    GREEN,
+    RED,
+    PURPLE,
+    YELLOW
+  }
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,18 +66,12 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
     locationStore.onDataUpdated((obj, coord) -> {
       // All UI modifications need to be run on the UI thread with
       // the following function
-      runOnUiThread(() -> mapboxMap.addMarker(
-        new MarkerOptions()
-            .position(coord)
-            .title("Async marker")
-      ));
+      runOnUiThread(() -> addMarker("Async marker", coord, MarkerColor.BLUE));
     });
 
     //Creating marker with event retrieved from Database
     List<Event> dbEvents = db.eventDao().getAll();
-    mapboxMap.addMarker(new MarkerOptions()
-              .position(new LatLng(dbEvents.get(0).latitude, dbEvents.get(0).longitude))
-              .title(dbEvents.get(0).title));
+    addMarker(dbEvents.get(0));
 
     // Start the polling after mapboxMap exists
     locationStore.run();
@@ -79,12 +83,73 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
     System.out.println("Location changed to " + location.toString());
   }
 
-  private void addMainMarker() {
-    quadMarker = map.addMarker(new MarkerOptions()
-        .position(new LatLng(40.107601, -88.227133))
-        .title("Main Quad"));
+  /**
+   * Add a marker corresponding to an event to the map.
+   *
+   * @param event the Event to draw a marker for
+   */
+  private void addMarker(Event event) {
+    // TODO: Specifiy a MarkerColor attribute for each event, or convert the event category
+    // to a MarkerColor
+    addMarker(event.title, new LatLng(event.latitude, event.longitude));
   }
 
+  private Marker addMarker(String title, LatLng position) {
+    return addMarker(title, position, MarkerColor.RED);
+  }
+
+  /**
+   * Add a marker onto the map with a specified title, position and color.
+   *
+   * See {MarkerColor} for available colors. Default color is MarkerColor.RED, which does not
+   * have an associated drawable resource file.
+   *
+   * @param title Title text to display on the marker
+   * @param position GPS coordinates at which the marker will be placed
+   * @param color Color of the marker
+   * @return Rendered Mapbox marker
+   */
+  private Marker addMarker(String title, LatLng position, MarkerColor color) {
+    int drawableId = -1;
+
+    switch (color) {
+      case BLUE:
+        drawableId = R.mipmap.ic_blue_marker;
+        break;
+      case GREEN:
+        drawableId = R.mipmap.ic_green_marker;
+        break;
+      case PURPLE:
+        drawableId = R.mipmap.ic_purple_marker;
+        break;
+      case YELLOW:
+        drawableId = R.mipmap.ic_yellow_marker;
+        break;
+      // Default option is a red marker
+      default:
+        break;
+    }
+
+    MarkerOptions markerOptions = new MarkerOptions()
+        .title(title)
+        .position(position);
+
+    if (drawableId >= 0) {
+      IconFactory iconFactory = IconFactory.getInstance(this);
+      Icon icon = iconFactory.fromResource(drawableId);
+      markerOptions.icon(icon);
+    }
+
+    return map.addMarker(markerOptions);
+  }
+
+  private void addMainMarker() {
+    quadMarker = addMarker("Main Quad", new LatLng(40.107601, -88.227133));
+  }
+
+  /**
+   * Initialize sliding drawer view.
+   */
   private void initializeSlideUp() {
     filterDrawer = findViewById(R.id.filterDrawer);
     slideUp = new SlideUpBuilder(filterDrawer)
