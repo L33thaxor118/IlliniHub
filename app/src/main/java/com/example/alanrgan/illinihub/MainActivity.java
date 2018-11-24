@@ -1,17 +1,21 @@
 package com.example.alanrgan.illinihub;
 
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
 import android.view.View;
 
+import com.example.alanrgan.illinihub.util.CircleBuilder;
 import com.mancj.slideup.SlideUp;
 import com.mancj.slideup.SlideUpBuilder;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.annotations.Polygon;
+import com.mapbox.mapboxsdk.annotations.PolygonOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 
@@ -24,6 +28,7 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
   private SlideUp slideUp;
   private MapboxMap map;
   private View filterDrawer;
+  private Polygon discoveryCircle;
 
   // Temporary variables to demonstrate interaction between fragment and MainActivity
   private Marker quadMarker;
@@ -80,7 +85,14 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
   @Override
   public void onLocationChanged(Location location) {
     // TODO: Render discovery radius here
-    System.out.println("Location changed to " + location.toString());
+    if (discoveryCircle != null) {
+      map.removePolygon(discoveryCircle);
+    }
+
+    PolygonOptions circleOptions = CircleBuilder
+        .create(new LatLng(location), 0.5)
+        .fillColor(Color.argb(125, 53, 64, 255));
+    discoveryCircle = map.addPolygon(circleOptions);
   }
 
   /**
