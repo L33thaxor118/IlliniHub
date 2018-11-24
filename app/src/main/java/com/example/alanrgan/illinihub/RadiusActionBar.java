@@ -18,9 +18,10 @@ public class RadiusActionBar extends RelativeLayout {
 
   private Observable<Double> radiusChangeObservable = new Observable<>();
 
-  private final double[] radii = {0.3, 0.5, 1.0, 1.3, 2.0, 2.5, 3.0};
+  // Discovery radius values in miles
+  private final double[] radii = {0.05, 0.1, 0.15, 0.2, 0.3, 0.5, 1.0, 1.3, 2.0, 2.5, 3.0};
 
-  // index of radius = 1.0
+  // Set initial radius to be 0.15mi
   private int radiusIdx = 2;
 
   public RadiusActionBar(Context context) {
@@ -50,19 +51,27 @@ public class RadiusActionBar extends RelativeLayout {
     radiusChangeObservable.addObserver(observer);
   }
 
+  public double getRadius() {
+    return radii[radiusIdx];
+  }
+
   private void updateRadiusLabel() {
-    radiusLabel.setText(String.format("Radius:\n%1.1f", radii[radiusIdx]));
+    radiusLabel.setText(String.format("Radius:\n%1.2f", radii[radiusIdx]));
     radiusChangeObservable.notifyObservers(radii[radiusIdx]);
   }
 
   private void incrementAndUpdateLabel() {
-    radiusIdx = Math.min(radiusIdx + 1, radii.length - 1);
-    updateRadiusLabel();
+    if (radiusIdx < radii.length - 1) {
+      radiusIdx += 1;
+      updateRadiusLabel();
+    }
   }
 
   private void decrementAndUpdateLabel() {
-    radiusIdx = Math.max(radiusIdx - 1, 0);
-    updateRadiusLabel();
+    if (radiusIdx > 0) {
+      radiusIdx -= 1;
+      updateRadiusLabel();
+    }
   }
 
 }

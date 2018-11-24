@@ -80,10 +80,7 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
     List<Event> dbEvents = db.eventDao().getAll();
     addMarker(dbEvents.get(0));
 
-    radiusActionBar.onRadiusChange((obs, radius) -> {
-      // TODO: Handle updating of discovery radius on mapboxMap here
-      System.out.printf("Radius changed to %1.1f\n", radius);
-    });
+    radiusActionBar.onRadiusChange((obs, radius) -> renderDiscoveryRadius(radius));
 
     // Start the polling after mapboxMap exists
     locationStore.run();
@@ -92,12 +89,25 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
   @Override
   public void onLocationChanged(Location location) {
     // TODO: Render discovery radius here
+    renderDiscoveryRadius(location);
+  }
+
+  private void renderDiscoveryRadius(double radius) {
+    renderDiscoveryRadius(locationComponent.getLastKnownLocation(), radius);
+  }
+
+  private void renderDiscoveryRadius(Location location) {
+    double radius = radiusActionBar.getRadius();
+    renderDiscoveryRadius(location, radius);
+  }
+
+  private void renderDiscoveryRadius(Location location, double radius) {
     if (discoveryCircle != null) {
       map.removePolygon(discoveryCircle);
     }
 
     PolygonOptions circleOptions = CircleBuilder
-        .create(new LatLng(location), 0.5)
+        .create(new LatLng(location), radius)
         .fillColor(Color.argb(125, 53, 64, 255));
     discoveryCircle = map.addPolygon(circleOptions);
   }
