@@ -52,13 +52,14 @@ public class DatabaseHelper {
       e.title = "sample " + String.valueOf(i);
       e.description = "this is a sample event";
       ArrayList<String> tags = new ArrayList<String>();
-      if ((i % 2) == 0) tags.add("21+");
-      tags.add("Business");
+      if ((i % 2) == 0) tags.add("Business");
+      tags.add("21+");
       tags.add("Food");
       tags.add("Free");
       tags.add("GiveAway");
       String tagsJson = new Gson().toJson(tags);
       e.tags = tagsJson;
+      System.out.println("Tags are " + tagsJson);
       new DBInsertAsyncTask(db.eventDao()).execute(e);
     }
   }
@@ -107,6 +108,12 @@ public class DatabaseHelper {
 
     @Override
     protected List<Event> doInBackground(String... params) {
+      System.out.print("Params: ");
+      for (String param : params) {
+        System.out.printf("%s, ", param);
+      }
+      System.out.println();
+//      System.out.println("Params are " + params.toString());
       return dao.getMatches(params[0]);
     }
 
