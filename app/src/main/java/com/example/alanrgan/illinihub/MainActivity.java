@@ -22,6 +22,7 @@ import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 
+import java.util.ArrayList;
 import java.util.List;
 
 // MainActivity MUST implement FilterDrawerFragment listener interface
@@ -33,6 +34,7 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
   private MapboxMap map;
   private View filterDrawer;
   private Polygon discoveryCircle;
+  private List<Event> eventsWithinRadius = new ArrayList<>();
 
   // Temporary variables to demonstrate interaction between fragment and MainActivity
   private Marker quadMarker;
@@ -95,7 +97,6 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
 
   @Override
   public void onLocationChanged(Location location) {
-    // TODO: Render discovery radius here
     renderDiscoveryRadius(location);
   }
 
@@ -126,6 +127,17 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
         .fillColor(Color.argb(125, 53, 64, 255));
     discoveryCircle = map.addPolygon(circleOptions);
     radiusActionBar.updateRadius(radius);
+
+    eventsWithinRadius.clear();
+
+    // Each time the radius is redrawn, we must search through all events
+    // and determine which ones are within the radius and populate the list accordingly
+    db.eventDao().getAll().forEach(event -> {
+      double distFromUser = event.distanceFrom(new LatLng(location));
+      if (distFromUser <= radius) {
+        eventsWithinRadius.add(event);
+      }
+    });
   }
 
   /**
