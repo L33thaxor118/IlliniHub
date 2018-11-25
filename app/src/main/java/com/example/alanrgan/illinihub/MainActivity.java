@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Toast;
 
+import com.example.alanrgan.illinihub.util.DBHelperAsyncResponse;
 import com.mancj.slideup.SlideUp;
 import com.mancj.slideup.SlideUpBuilder;
 import com.mapbox.mapboxsdk.annotations.Icon;
@@ -15,15 +17,18 @@ import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 // MainActivity MUST implement FilterDrawerFragment listener interface
 // in order to communicate events
-public class MainActivity extends LocationActivity implements FilterDrawerFragment.OnFragmentInteractionListener {
+public class MainActivity extends LocationActivity implements FilterDrawerFragment.OnFragmentInteractionListener, DBHelperAsyncResponse {
   private LocationStore locationStore;
   private SlideUp slideUp;
   private MapboxMap map;
   private View filterDrawer;
+
 
   // Temporary variables to demonstrate interaction between fragment and MainActivity
   private Marker quadMarker;
@@ -40,18 +45,10 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     locationStore = new LocationStore();
-
     initializeSlideUp();
 
     //Testing database connection
-    Event e = new Event();
-    db.eventDao().deleteAll();
-    e.title = "test";
-    e.description = "testing";
-    e.latitude = 40.107;
-    e.longitude = -88.227;
-    e.tags = "none";
-    db.eventDao().insertAll(e);
+    dbHelper.populateWithSampleData();
   }
 
   @Override
@@ -69,9 +66,11 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
       runOnUiThread(() -> addMarker("Async marker", coord, MarkerColor.BLUE));
     });
 
-    //Creating marker with event retrieved from Database
-    List<Event> dbEvents = db.eventDao().getAll();
-    addMarker(dbEvents.get(0));
+    //Creating markers with events retrieved from Database
+    List<Event> dbEvents = dbHelper.getAll();
+    for (int i = 0; i < dbEvents.size(); i++) {
+      addMarker(dbEvents.get(i));
+    }
 
     // Start the polling after mapboxMap exists
     locationStore.run();
@@ -88,10 +87,10 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
    *
    * @param event the Event to draw a marker for
    */
-  private void addMarker(Event event) {
+  private Marker addMarker(Event event) {
     // TODO: Specifiy a MarkerColor attribute for each event, or convert the event category
     // to a MarkerColor
-    addMarker(event.title, new LatLng(event.latitude, event.longitude));
+    return addMarker(event.title, new LatLng(event.latitude, event.longitude));
   }
 
   private Marker addMarker(String title, LatLng position) {
@@ -100,13 +99,13 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
 
   /**
    * Add a marker onto the map with a specified title, position and color.
-   *
+   * <p>
    * See {MarkerColor} for available colors. Default color is MarkerColor.RED, which does not
    * have an associated drawable resource file.
    *
-   * @param title Title text to display on the marker
+   * @param title    Title text to display on the marker
    * @param position GPS coordinates at which the marker will be placed
-   * @param color Color of the marker
+   * @param color    Color of the marker
    * @return Rendered Mapbox marker
    */
   private Marker addMarker(String title, LatLng position, MarkerColor color) {
@@ -131,8 +130,8 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
     }
 
     MarkerOptions markerOptions = new MarkerOptions()
-        .title(title)
-        .position(position);
+            .title(title)
+            .position(position);
 
     if (drawableId >= 0) {
       IconFactory iconFactory = IconFactory.getInstance(this);
@@ -144,7 +143,8 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
   }
 
   private void addMainMarker() {
-    quadMarker = addMarker("Main Quad", new LatLng(40.107601, -88.227133));
+    Event event = new Event("Main Quad", "", 40.107601, -88.227133);
+    quadMarker = addMarker(event);
   }
 
   /**
@@ -153,14 +153,14 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
   private void initializeSlideUp() {
     filterDrawer = findViewById(R.id.filterDrawer);
     slideUp = new SlideUpBuilder(filterDrawer)
-          .withStartState(SlideUp.State.HIDDEN)
-          .withStartGravity(Gravity.BOTTOM)
-          // 'Slide from other view' means that a slide can be triggered
-          // by another view, (e.g. a handle), rather than a button.
-          // We will use a persistent view at the bottom of the map
-          // to let the user drag to show/hide the view.
-          .withSlideFromOtherView(findViewById(R.id.bottomSlideHandle))
-          .build();
+            .withStartState(SlideUp.State.HIDDEN)
+            .withStartGravity(Gravity.BOTTOM)
+            // 'Slide from other view' means that a slide can be triggered
+            // by another view, (e.g. a handle), rather than a button.
+            // We will use a persistent view at the bottom of the map
+            // to let the user drag to show/hide the view.
+            .withSlideFromOtherView(findViewById(R.id.bottomSlideHandle))
+            .build();
   }
 
   // Proof of concept for interaction between a Fragment and the Main Activity
@@ -175,6 +175,32 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
       } else {
         addMainMarker();
       }
+    }
+  }
+
+  /**
+   * This method is called by FilterDrawerFragment when the ArrayList containing current tags is updated.
+   * @param tags
+   */
+  public void updateFilter(ArrayList<String> tags) {
+    map.clear();
+    StringBuilder search = new StringBuilder();
+    Collections.sort(tags, String.CASE_INSENSITIVE_ORDER);
+    search.append('%');
+    for (String tag : tags) {
+      search.append(tag + '%');
+    }
+    dbHelper.getMatchesAsync(search.toString(), this);
+  }
+
+  /**
+   * Part of DBHelperAsyncResponse interface. Returns result of query
+   * @param matches
+   */
+  @Override
+  public void processFinishGetMatches(List<Event> matches) {
+    for (int i = 0; i < matches.size(); i++) {
+      addMarker(matches.get(i));
     }
   }
 }

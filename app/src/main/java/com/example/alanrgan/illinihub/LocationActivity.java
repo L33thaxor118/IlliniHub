@@ -22,11 +22,11 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
 // In order to use fragments, we need to use AppCompatActivity or FragmentActivity
 public abstract class LocationActivity extends AppCompatActivity
-    implements OnMapReadyCallback, LocationEngineListener {
+        implements OnMapReadyCallback, LocationEngineListener {
   protected MapView mapView;
   private Bundle savedState;
   private final int FINE_LOCATION_PERMISSION = 0;
-  protected Database db;
+  protected DatabaseHelper dbHelper;
 
   protected LocationComponent locationComponent;
   protected LocationEngine locationEngine;
@@ -46,13 +46,13 @@ public abstract class LocationActivity extends AppCompatActivity
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     savedState = savedInstanceState;
-    db = Database.getDatabase(getApplicationContext());
+    dbHelper = new DatabaseHelper(getApplicationContext());
     // Check if we need to prompt the user for permissions
     if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-        != PackageManager.PERMISSION_GRANTED) {
+            != PackageManager.PERMISSION_GRANTED) {
       // Request fine location permissions if the app does not already have them
       ActivityCompat.requestPermissions(
-          this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+              this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
     } else {
       // If permissions are already granted, initialize the map view
       initMapView();
@@ -61,7 +61,7 @@ public abstract class LocationActivity extends AppCompatActivity
 
   @Override
   public void onRequestPermissionsResult(
-      int requestCode, String[] permissions, int[] grantResults) {
+          int requestCode, String[] permissions, int[] grantResults) {
     switch (requestCode) {
       case FINE_LOCATION_PERMISSION:
         // Check if the user has granted the app location permissions
@@ -88,7 +88,7 @@ public abstract class LocationActivity extends AppCompatActivity
     locationComponent = mapboxMap.getLocationComponent();
     locationComponent.activateLocationComponent(this);
     locationComponent.setLocationComponentEnabled(true);
-    locationComponent.setCameraMode(CameraMode.TRACKING);
+    //locationComponent.setCameraMode(CameraMode.TRACKING);
     locationComponent.setRenderMode(RenderMode.NORMAL);
   }
 

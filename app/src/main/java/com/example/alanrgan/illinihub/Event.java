@@ -1,4 +1,5 @@
 package com.example.alanrgan.illinihub;
+
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
@@ -9,24 +10,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 @Entity
 public class Event {
-    @PrimaryKey(autoGenerate = true)
-    public int eventId;
 
-    @ColumnInfo(name = "Title")
-    public String title;
+  public Event(String Title, String Description, double Latitude, double Longitude) {
+    title = Title;
+    description = Description;
+    latitude = Latitude;
+    longitude = Longitude;
+    tags = "";
+  }
 
-    @ColumnInfo(name = "Description")
-    public String description;
+  public Event() {
+  }
 
-    @ColumnInfo(name = "Latitude")
-    public double latitude;
+  @PrimaryKey(autoGenerate = true)
+  public int eventId;
 
-    @ColumnInfo(name = "Longitude")
-    public double longitude;
+  @ColumnInfo(name = "Title")
+  public String title;
 
-    @ColumnInfo(name = "tags(json)")
-    public String tags;
+  @ColumnInfo(name = "Description")
+  public String description;
+
+  @ColumnInfo(name = "Latitude")
+  public double latitude;
+
+  @ColumnInfo(name = "Longitude")
+  public double longitude;
+
+  @ColumnInfo(name = "tags(json)")
+  public String tags;
 }
