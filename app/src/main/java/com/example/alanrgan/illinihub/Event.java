@@ -8,6 +8,18 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 
 @Entity
 public class Event {
+
+  public Event(String Title, String Description, double Latitude, double Longitude) {
+    title = Title;
+    description = Description;
+    latitude = Latitude;
+    longitude = Longitude;
+    tags = "";
+  }
+
+  public Event() {
+  }
+
   @PrimaryKey(autoGenerate = true)
   public int eventId;
 

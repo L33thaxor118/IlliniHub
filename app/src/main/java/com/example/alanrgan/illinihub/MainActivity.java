@@ -7,10 +7,13 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.alanrgan.illinihub.util.CircleBuilder;
 import com.example.alanrgan.illinihub.util.GPSUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.alanrgan.illinihub.util.DBHelperAsyncResponse;
+
 import com.mancj.slideup.SlideUp;
 import com.mancj.slideup.SlideUpBuilder;
 import com.mapbox.mapboxsdk.annotations.Icon;
@@ -24,11 +27,12 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 // MainActivity MUST implement FilterDrawerFragment listener interface
 // in order to communicate events
-public class MainActivity extends LocationActivity implements FilterDrawerFragment.OnFragmentInteractionListener {
+public class MainActivity extends LocationActivity implements FilterDrawerFragment.OnFragmentInteractionListener, DBHelperAsyncResponse {
   private LocationStore locationStore;
   private RadiusActionBar radiusActionBar;
   private SlideUp slideUp;
@@ -61,14 +65,7 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
     initializeFabs();
 
     //Testing database connection
-    Event e = new Event();
-    db.eventDao().deleteAll();
-    e.title = "test";
-    e.description = "testing";
-    e.latitude = 40.107;
-    e.longitude = -88.227;
-    e.tags = "none";
-    db.eventDao().insertAll(e);
+    dbHelper.populateWithSampleData();
   }
 
   @Override
@@ -87,9 +84,11 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
       runOnUiThread(() -> addMarker("Async marker", coord, MarkerColor.BLUE));
     });
 
-    //Creating marker with event retrieved from Database
-    List<Event> dbEvents = db.eventDao().getAll();
-    addMarker(dbEvents.get(0));
+    //Creating markers with events retrieved from Database
+    List<Event> dbEvents = dbHelper.getAll();
+    for (int i = 0; i < dbEvents.size(); i++) {
+      addMarker(dbEvents.get(i));
+    }
 
     radiusActionBar.onRadiusChange((obs, radius) -> renderDiscoveryRadius(radius));
 
@@ -136,7 +135,7 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
 
     // Each time the radius is redrawn, we must search through all events
     // and determine which ones are within the radius and populate the list accordingly
-    db.eventDao().getAll().forEach(event -> {
+    dbHelper.getAll().forEach(event -> {
       double distFromUser = event.distanceFrom(new LatLng(location));
       if (distFromUser <= radius) {
         eventsWithinRadius.add(event);
@@ -173,10 +172,10 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
    *
    * @param event the Event to draw a marker for
    */
-  private void addMarker(Event event) {
+  private Marker addMarker(Event event) {
     // TODO: Specify a MarkerColor attribute for each event, or convert the event category
     // to a MarkerColor
-    addMarker(event.title, new LatLng(event.latitude, event.longitude));
+    return addMarker(event.title, new LatLng(event.latitude, event.longitude));
   }
 
   private Marker addMarker(String title, LatLng position) {
@@ -185,13 +184,13 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
 
   /**
    * Add a marker onto the map with a specified title, position and color.
-   *
+   * <p>
    * See {MarkerColor} for available colors. Default color is MarkerColor.RED, which does not
    * have an associated drawable resource file.
    *
-   * @param title Title text to display on the marker
+   * @param title    Title text to display on the marker
    * @param position GPS coordinates at which the marker will be placed
-   * @param color Color of the marker
+   * @param color    Color of the marker
    * @return Rendered Mapbox marker
    */
   private Marker addMarker(String title, LatLng position, MarkerColor color) {
@@ -229,7 +228,8 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
   }
 
   private void addMainMarker() {
-    quadMarker = addMarker("Main Quad", new LatLng(40.107601, -88.227133));
+    Event event = new Event("Main Quad", "", 40.107601, -88.227133);
+    quadMarker = addMarker(event);
   }
 
   /**
@@ -278,6 +278,32 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
       } else {
         addMainMarker();
       }
+    }
+  }
+
+  /**
+   * This method is called by FilterDrawerFragment when the ArrayList containing current tags is updated.
+   * @param tags
+   */
+  public void updateFilter(ArrayList<String> tags) {
+    map.clear();
+    StringBuilder search = new StringBuilder();
+    Collections.sort(tags, String.CASE_INSENSITIVE_ORDER);
+    search.append('%');
+    for (String tag : tags) {
+      search.append(tag + '%');
+    }
+    dbHelper.getMatchesAsync(search.toString(), this);
+  }
+
+  /**
+   * Part of DBHelperAsyncResponse interface. Returns result of query
+   * @param matches
+   */
+  @Override
+  public void processFinishGetMatches(List<Event> matches) {
+    for (int i = 0; i < matches.size(); i++) {
+      addMarker(matches.get(i));
     }
   }
 }
