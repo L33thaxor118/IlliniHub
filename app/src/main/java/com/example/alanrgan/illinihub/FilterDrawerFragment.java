@@ -7,7 +7,13 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.GridView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 
 /**
@@ -23,11 +29,18 @@ public class FilterDrawerFragment extends Fragment {
   // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
   private static final String ARG_PARAM1 = "param1";
   private static final String ARG_PARAM2 = "param2";
+  private Context activityContext;
 
   // TODO: Rename and change types of parameters
   private String mParam1 = "Hello";
   private String mParam2;
   private Button filterButton;
+  private ArrayList<String> unselectedTags;
+  private ArrayList<String> selectedTags;
+  private ArrayAdapter<String> unselectedTagAdapter;
+  private ArrayAdapter<String> selectedTagAdapter;
+  private GridView unselectedTagsContainer;
+  private GridView selectedTagsContainer;
 
   private OnFragmentInteractionListener mListener;
 
@@ -75,6 +88,35 @@ public class FilterDrawerFragment extends Fragment {
     // At this point, we can query the parent view for the UI component we are looking for
     // with getView() and findViewById()
     filterButton = getView().findViewById(R.id.filterButton);
+    unselectedTagsContainer = getView().findViewById(R.id.unselected_tag_container);
+    selectedTagsContainer = getView().findViewById(R.id.selected_tag_container);
+    unselectedTagsContainer.setAdapter(unselectedTagAdapter);
+    selectedTagsContainer.setAdapter(selectedTagAdapter);
+
+    unselectedTagsContainer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+      @Override
+      public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+        selectedTags.add(unselectedTags.get(position));
+        unselectedTags.remove(position);
+        unselectedTagAdapter.notifyDataSetChanged();
+        selectedTagAdapter.notifyDataSetChanged();
+        //Toast.makeText(getActivity(), "" + position, Toast.LENGTH_SHORT).show();
+        ((MainActivity) getActivity()).updateFilter(selectedTags);
+      }
+    });
+
+    selectedTagsContainer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+      @Override
+      public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+        unselectedTags.add(selectedTags.get(position));
+        selectedTags.remove(position);
+        unselectedTagAdapter.notifyDataSetChanged();
+        selectedTagAdapter.notifyDataSetChanged();
+        //Toast.makeText(getActivity(), "" + position, Toast.LENGTH_SHORT).show();
+        ((MainActivity) getActivity()).updateFilter(selectedTags);
+      }
+    });
+
     filterButton.setOnClickListener(v -> {
       // Ensure that the listener has been attached
       if (mListener != null) {
@@ -86,12 +128,22 @@ public class FilterDrawerFragment extends Fragment {
 
   @Override
   public void onAttach(Context context) {
+    unselectedTags = new ArrayList<String>();
+    selectedTags = new ArrayList<String>();
+    unselectedTags.add("Business");
+    unselectedTags.add("Food");
+    unselectedTags.add("Free");
+    unselectedTags.add("GiveAway");
+    unselectedTags.add("21+");
+    unselectedTagAdapter = new ArrayAdapter<String>(context, R.layout.tag, unselectedTags);
+    selectedTagAdapter = new ArrayAdapter<String>(context, R.layout.tag, selectedTags);
+
     super.onAttach(context);
     if (context instanceof OnFragmentInteractionListener) {
       mListener = (OnFragmentInteractionListener) context;
     } else {
       throw new RuntimeException(context.toString()
-          + " must implement OnFragmentInteractionListener");
+              + " must implement OnFragmentInteractionListener");
     }
   }
 
