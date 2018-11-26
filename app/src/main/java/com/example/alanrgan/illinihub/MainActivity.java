@@ -18,7 +18,6 @@ import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.annotations.Polygon;
 import com.mapbox.mapboxsdk.annotations.PolygonOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
-import com.mapbox.mapboxsdk.camera.CameraUpdate;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 
@@ -204,6 +203,11 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
             .zoom(17)
             .build()
     ));
+
+    FloatingActionButton createEventButton = findViewById(R.id.createEventButton);
+    createEventButton.setOnClickListener(event -> {
+      // TODO: Launch / inflate CreateEvent view here
+    });
   }
 
   // Proof of concept for interaction between a Fragment and the Main Activity
