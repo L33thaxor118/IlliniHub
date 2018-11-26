@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.view.View;
 
 import com.example.alanrgan.illinihub.util.CircleBuilder;
+import com.example.alanrgan.illinihub.util.GPSUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mancj.slideup.SlideUp;
 import com.mancj.slideup.SlideUpBuilder;
@@ -69,6 +70,7 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
     super.onMapReady(mapboxMap);
 
     map = mapboxMap;
+
     // The map will be created AFTER the user grants location permissions
     addMainMarker();
 
@@ -85,6 +87,8 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
 
     radiusActionBar.onRadiusChange((obs, radius) -> renderDiscoveryRadius(radius));
 
+    map.addOnMapLongClickListener(point -> updateRadiusToPoint(point));
+
     // Start the polling after mapboxMap exists
     locationStore.run();
   }
@@ -93,6 +97,14 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
   public void onLocationChanged(Location location) {
     // TODO: Render discovery radius here
     renderDiscoveryRadius(location);
+  }
+
+  private void updateRadiusToPoint(LatLng point) {
+    Location location = locationComponent.getLastKnownLocation();
+    double radius = GPSUtils.milesBetween(point, new LatLng(location));
+    if (radius <= RadiusActionBar.MAXIMUM_ALLOWED_RADIUS) {
+      renderDiscoveryRadius(location, radius);
+    }
   }
 
   private void renderDiscoveryRadius(double radius) {
@@ -113,6 +125,7 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
         .create(new LatLng(location), radius)
         .fillColor(Color.argb(125, 53, 64, 255));
     discoveryCircle = map.addPolygon(circleOptions);
+    radiusActionBar.updateRadius(radius);
   }
 
   /**

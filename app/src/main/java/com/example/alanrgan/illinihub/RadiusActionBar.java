@@ -12,6 +12,8 @@ import com.example.alanrgan.illinihub.util.Observable;
 import com.example.alanrgan.illinihub.util.Observer;
 
 public class RadiusActionBar extends RelativeLayout {
+  public static final double MAXIMUM_ALLOWED_RADIUS = 3.0;
+
   private Button plusButton;
   private Button minusButton;
   private TextView radiusLabel;
@@ -22,7 +24,7 @@ public class RadiusActionBar extends RelativeLayout {
   private final double[] radii = {0.05, 0.1, 0.15, 0.2, 0.3, 0.5, 1.0, 1.3, 2.0, 2.5, 3.0};
 
   // Set initial radius to be 0.15mi
-  private int radiusIdx = 2;
+  private double radius = radii[2];
 
   public RadiusActionBar(Context context) {
     super(context, null);
@@ -38,13 +40,13 @@ public class RadiusActionBar extends RelativeLayout {
     LayoutInflater.from(context).inflate(R.layout.radius_action_bar, this);
     //Do any more custom init you would like to access children and do setup
     plusButton = (Button) findViewById(R.id.plusButton);
-    plusButton.setOnClickListener(event -> incrementAndUpdateLabel());
+    plusButton.setOnClickListener(event -> snapToNearestRadius(true));
 
     minusButton = (Button) findViewById(R.id.minusButton);
-    minusButton.setOnClickListener(event -> decrementAndUpdateLabel());
+    minusButton.setOnClickListener(event -> snapToNearestRadius(false));
 
     radiusLabel = (TextView) findViewById(R.id.radiusLabel);
-    updateRadiusLabel();
+    updateRadius();
   }
 
   public void onRadiusChange(Observer<Double> observer) {
@@ -52,26 +54,40 @@ public class RadiusActionBar extends RelativeLayout {
   }
 
   public double getRadius() {
-    return radii[radiusIdx];
+    return radius;
   }
 
-  private void updateRadiusLabel() {
-    radiusLabel.setText(String.format("Radius:\n%1.2f mi", radii[radiusIdx]));
+  public void updateRadius() {
+    updateRadius(radius);
+  }
+
+  public void updateRadius(double rad) {
+    radiusLabel.setText(String.format("Radius:\n%1.2f mi", rad));
+    radius = rad;
+  }
+
+  private int findNearestRadiusIndex(boolean roundUp) {
+    int lo = 0;
+    int hi = radii.length - 1;
+    int mid;
+
+    while (lo <= hi) {
+      mid = (lo + hi) / 2;
+      if (radii[mid] > radius) {
+        hi = mid - 1;
+      } else if (radii[mid] < radius) {
+        lo = mid + 1;
+      } else {
+        return roundUp ? Math.min(mid + 1, radii.length - 1) : Math.max(0, mid - 1);
+      }
+    }
+
+    return roundUp ? lo : Math.max(hi, 0);
+  }
+
+  private void snapToNearestRadius(boolean roundUp) {
+    int radiusIdx = findNearestRadiusIndex(roundUp);
+    updateRadius(radii[radiusIdx]);
     radiusChangeObservable.notifyObservers(radii[radiusIdx]);
   }
-
-  private void incrementAndUpdateLabel() {
-    if (radiusIdx < radii.length - 1) {
-      radiusIdx += 1;
-      updateRadiusLabel();
-    }
-  }
-
-  private void decrementAndUpdateLabel() {
-    if (radiusIdx > 0) {
-      radiusIdx -= 1;
-      updateRadiusLabel();
-    }
-  }
-
 }
