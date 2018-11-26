@@ -1,11 +1,11 @@
 package com.example.alanrgan.illinihub;
 
 
-import android.arch.persistence.room.Room;
-import android.arch.persistence.room.RoomDatabase;
+import androidx.room.RoomDatabase;
+import androidx.room.Room;
 import android.content.Context;
 
-@android.arch.persistence.room.Database(entities = {Event.class},version = 1)
+@androidx.room.Database(entities = {Event.class},version = 1)
 public abstract class Database extends RoomDatabase {
     public abstract EventDao eventDao();
     private static volatile Database INSTANCE;
