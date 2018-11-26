@@ -3,10 +3,12 @@ package com.example.alanrgan.illinihub;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
+
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineListener;
@@ -19,6 +21,7 @@ import com.mapbox.mapboxsdk.location.modes.RenderMode;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.mapboxsdk.maps.UiSettings;
 
 // In order to use fragments, we need to use AppCompatActivity or FragmentActivity
 public abstract class LocationActivity extends AppCompatActivity
@@ -80,6 +83,9 @@ public abstract class LocationActivity extends AppCompatActivity
 
   @Override
   public void onMapReady(final MapboxMap mapboxMap) {
+    UiSettings settings = mapboxMap.getUiSettings();
+    settings.setCompassGravity(Gravity.LEFT);
+
     locationEngine = new LocationEngineProvider(this).obtainBestLocationEngineAvailable();
     locationEngine.addLocationEngineListener(this);
     locationEngine.setPriority(LocationEnginePriority.HIGH_ACCURACY);

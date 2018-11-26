@@ -3,11 +3,12 @@ package com.example.alanrgan.illinihub;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.Gravity;
 import android.view.View;
 
 import com.example.alanrgan.illinihub.util.CircleBuilder;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mancj.slideup.SlideUp;
 import com.mancj.slideup.SlideUpBuilder;
 import com.mapbox.mapboxsdk.annotations.Icon;
@@ -16,6 +17,7 @@ import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.annotations.Polygon;
 import com.mapbox.mapboxsdk.annotations.PolygonOptions;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 
@@ -49,6 +51,7 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
 
     radiusActionBar = findViewById(R.id.radiusActionBar);
     initializeSlideUp();
+    initializeFabs();
 
     //Testing database connection
     Event e = new Event();
@@ -190,6 +193,21 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
           // to let the user drag to show/hide the view.
           .withSlideFromOtherView(findViewById(R.id.bottomSlideHandle))
           .build();
+  }
+
+  private void initializeFabs() {
+    FloatingActionButton recenterButton = findViewById(R.id.recenterButton);
+    recenterButton.setOnClickListener(event -> map.animateCamera(m ->
+        new CameraPosition.Builder()
+            .target(new LatLng(locationComponent.getLastKnownLocation()))
+            .zoom(17)
+            .build()
+    ));
+
+    FloatingActionButton createEventButton = findViewById(R.id.createEventButton);
+    createEventButton.setOnClickListener(event -> {
+      // TODO: Launch / inflate CreateEvent view here
+    });
   }
 
   // Proof of concept for interaction between a Fragment and the Main Activity
