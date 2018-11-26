@@ -87,7 +87,11 @@ public class RadiusActionBar extends RelativeLayout {
 
   private void snapToNearestRadius(boolean roundUp) {
     int radiusIdx = findNearestRadiusIndex(roundUp);
-    updateRadius(radii[radiusIdx]);
-    radiusChangeObservable.notifyObservers(radii[radiusIdx]);
+
+    double nextRadius = radii[radiusIdx];
+    if (radius != nextRadius) {
+      updateRadius(radii[radiusIdx]);
+      radiusChangeObservable.notifyObservers(radii[radiusIdx]);
+    }
   }
 }
