@@ -1,5 +1,6 @@
 package com.example.alanrgan.illinihub;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 
+import java.util.ArrayList;
 import java.util.List;
 
 // MainActivity MUST implement FilterDrawerFragment listener interface
@@ -33,6 +35,9 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
   private MapboxMap map;
   private View filterDrawer;
   private Polygon discoveryCircle;
+  private List<Event> eventsWithinRadius = new ArrayList<>();
+
+  private NotificationManager notificationManager;
 
   // Temporary variables to demonstrate interaction between fragment and MainActivity
   private Marker quadMarker;
@@ -49,6 +54,7 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     locationStore = new LocationStore();
+    notificationManager = new NotificationManager(getApplicationContext());
 
     radiusActionBar = findViewById(R.id.radiusActionBar);
     initializeSlideUp();
@@ -95,7 +101,6 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
 
   @Override
   public void onLocationChanged(Location location) {
-    // TODO: Render discovery radius here
     renderDiscoveryRadius(location);
   }
 
@@ -126,6 +131,41 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
         .fillColor(Color.argb(125, 53, 64, 255));
     discoveryCircle = map.addPolygon(circleOptions);
     radiusActionBar.updateRadius(radius);
+
+    eventsWithinRadius.clear();
+
+    // Each time the radius is redrawn, we must search through all events
+    // and determine which ones are within the radius and populate the list accordingly
+    db.eventDao().getAll().forEach(event -> {
+      double distFromUser = event.distanceFrom(new LatLng(location));
+      if (distFromUser <= radius) {
+        eventsWithinRadius.add(event);
+      }
+    });
+
+    if (eventsWithinRadius.size() > 0) {
+      // TODO: Create an 'EventDetails' activity where users can scroll through event info
+      // We will want to pass in an ArrayList of Events to the intent. We will also
+      // need to have Event implement the Serializable interface.
+
+      // Right now, users are notified every time the circle is redrawn (which happens every time
+      // the user moves). We only want to notify them once.
+      // TODO: Keep track of whether or not a user has been notified about a specific event
+
+      Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+      String title;
+      String content;
+      if (eventsWithinRadius.size() == 1) {
+        Event event = eventsWithinRadius.get(0);
+        title = "Found a nearby event";
+        content = String.format("[%s]", event.title);
+      } else {
+        title = String.format("Found %d nearby events", eventsWithinRadius.size());
+        content = "Tap to view event details";
+      }
+
+      notificationManager.showNotification(title, content, intent);
+    }
   }
 
   /**
@@ -134,7 +174,7 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
    * @param event the Event to draw a marker for
    */
   private void addMarker(Event event) {
-    // TODO: Specifiy a MarkerColor attribute for each event, or convert the event category
+    // TODO: Specify a MarkerColor attribute for each event, or convert the event category
     // to a MarkerColor
     addMarker(event.title, new LatLng(event.latitude, event.longitude));
   }
@@ -210,12 +250,15 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
 
   private void initializeFabs() {
     FloatingActionButton recenterButton = findViewById(R.id.recenterButton);
-    recenterButton.setOnClickListener(event -> map.animateCamera(m ->
-        new CameraPosition.Builder()
-            .target(new LatLng(locationComponent.getLastKnownLocation()))
-            .zoom(17)
-            .build()
-    ));
+    recenterButton.setOnClickListener(event -> {
+      double currentZoom = map.getCameraPosition().zoom;
+      map.easeCamera(m ->
+          new CameraPosition.Builder()
+              .target(new LatLng(locationComponent.getLastKnownLocation()))
+              .zoom(currentZoom)
+              .build()
+      );
+    });
 
     FloatingActionButton createEventButton = findViewById(R.id.createEventButton);
     createEventButton.setOnClickListener(event -> {
