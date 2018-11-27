@@ -20,7 +20,10 @@ public interface EventDao {
   List<Event> getMatches(String search);
 
   @Insert
-  void insertAll(Event... events);
+  long insert(Event event);
+
+  @Insert
+  long[] insertAll(Event... events);
 
   @Delete
   void delete(Event event);

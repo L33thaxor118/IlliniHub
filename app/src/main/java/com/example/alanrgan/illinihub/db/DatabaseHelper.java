@@ -25,9 +25,9 @@ public class DatabaseHelper {
   }
 
   public void addEvent(Event event, ArrayList<String> tags){
-    db.eventDao().insertAll(event);
+    int eventId = (int)db.eventDao().insert(event);
     for (String tag : tags){
-      EventTagJoin join = new EventTagJoin(event.eventId, tag);
+      EventTagJoin join = new EventTagJoin(eventId, tag);
       db.eventTagJoinDao().insert(join);
     }
   }
@@ -79,7 +79,6 @@ public class DatabaseHelper {
     ArrayList<String> tags = new ArrayList<String>(Arrays.asList("Business", "21+", "Food", "Free", "Tech Talk", "Ladies Night", "Study Group", "GiveAway"));
     for (int i = 0; i < 8; i++) {
       Event e1 = new Event("Sample" + i, "test", 40.107560 + (double)i/10000, -88.228163, new Date(), new Date(),"Public");
-      e1.eventId = i;
       ArrayList<String> current_tags = new ArrayList<String>(tags.subList(0,i+1));
       addEvent(e1, current_tags);
     }

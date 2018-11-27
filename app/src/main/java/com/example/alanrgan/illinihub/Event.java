@@ -7,7 +7,6 @@ import com.example.alanrgan.illinihub.util.GPSUtils;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
 import java.util.Date;
-import java.util.UUID;
 
 @Entity
 public class Event {
@@ -26,7 +25,7 @@ public class Event {
   public Event() {
   }
 
-  @PrimaryKey()
+  @PrimaryKey(autoGenerate = true)
   public int eventId;
 
   @ColumnInfo(name = "Title")

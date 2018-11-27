@@ -19,7 +19,7 @@ public class EventTagJoin {
   public int id;
 
   @NonNull
-  public int event_id;
+  public Integer event_id;
 
   @NonNull
   public String tag_name;

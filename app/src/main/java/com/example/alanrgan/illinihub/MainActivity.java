@@ -5,10 +5,8 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.alanrgan.illinihub.util.CircleBuilder;
 import com.example.alanrgan.illinihub.util.GPSUtils;
@@ -28,7 +26,6 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 // MainActivity MUST implement FilterDrawerFragment listener interface
@@ -43,9 +40,6 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
   private List<Event> eventsWithinRadius = new ArrayList<>();
 
   private NotificationManager notificationManager;
-
-  // Temporary variables to demonstrate interaction between fragment and MainActivity
-  private Marker quadMarker;
 
   private enum MarkerColor {
     BLUE,
@@ -260,24 +254,12 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
     });
   }
 
-  // Proof of concept for interaction between a Fragment and the Main Activity
-  // This function will toggle the Main Quad marker
-  @Override
-  public void onFragmentInteraction(String param) {
-    if (map == null) return;
-    if (quadMarker != null) {
-      long markerId = quadMarker.getId();
-      if (map.getAnnotation(markerId) != null) {
-        map.removeMarker(quadMarker);
-      }
-    }
-  }
-
   /**
    * This method is called by FilterDrawerFragment when the ArrayList containing current tags is updated.
    * @param tags
    */
-  public void updateFilter(ArrayList<String> tags) {
+  @Override
+  public void updateFilter(List<String> tags) {
     map.clear();
     //dbHelper.getMatchesAsync(search.toString(), this);
     String query = generateQuery(tags, 0);
@@ -287,7 +269,7 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
     }
   }
 
-  public String generateQuery(ArrayList<String> tags, int level) {
+  public String generateQuery(List<String> tags, int level) {
     if (tags.size() == 0){
       return "SELECT * FROM event";
     }
