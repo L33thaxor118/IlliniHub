@@ -3,20 +3,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FilterDrawerFragment">
+    tools:context=".FilterDrawerFragment"
+    >
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white"
-        android:gravity="center"
-        android:text="@string/filter_drawer_placeholder"
-        android:textAlignment="center" />
+        android:orientation="vertical"
+        android:alpha="1"
+        android:background="@color/white">
 
-    <Button
-        android:id="@+id/filterButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button" />
+        <SearchView
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+        </SearchView>
+
+        <GridView
+            android:id="@+id/selected_tag_container"
+            android:layout_height= "200dp"
+            android:layout_width="match_parent"
+            android:columnWidth="90dp"
+            android:numColumns="auto_fit"
+            android:verticalSpacing="10dp"
+            android:horizontalSpacing="10dp"
+            android:stretchMode="columnWidth"
+            android:gravity="center"
+            >
+
+        </GridView>
+
+        <GridView
+            android:id="@+id/unselected_tag_container"
+            android:layout_height="200dp"
+            android:layout_width="match_parent"
+            android:columnWidth="90dp"
+            android:numColumns="auto_fit"
+            android:verticalSpacing="10dp"
+            android:horizontalSpacing="10dp"
+            android:stretchMode="columnWidth"
+            android:gravity="center">
+
+        </GridView>
+
+    </LinearLayout>
+
 
 </FrameLayout>
