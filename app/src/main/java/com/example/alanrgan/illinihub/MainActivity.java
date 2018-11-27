@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
@@ -64,7 +65,6 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
     initializeSlideUp();
     initializeFabs();
 
-    //Testing database connection
     dbHelper.populateWithSampleData();
   }
 
@@ -75,7 +75,6 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
     map = mapboxMap;
 
     // The map will be created AFTER the user grants location permissions
-    addMainMarker();
 
     // Register a listener for async data loading
     locationStore.onDataUpdated((obj, coord) -> {
@@ -227,11 +226,6 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
     return map.addMarker(markerOptions);
   }
 
-  private void addMainMarker() {
-    Event event = new Event("Main Quad", "", 40.107601, -88.227133);
-    quadMarker = addMarker(event);
-  }
-
   /**
    * Initialize sliding drawer view.
    */
@@ -275,8 +269,6 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
       long markerId = quadMarker.getId();
       if (map.getAnnotation(markerId) != null) {
         map.removeMarker(quadMarker);
-      } else {
-        addMainMarker();
       }
     }
   }
@@ -287,13 +279,27 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
    */
   public void updateFilter(ArrayList<String> tags) {
     map.clear();
-    StringBuilder search = new StringBuilder();
-    Collections.sort(tags, String.CASE_INSENSITIVE_ORDER);
-    search.append('%');
-    for (String tag : tags) {
-      search.append(tag + '%');
+    //dbHelper.getMatchesAsync(search.toString(), this);
+    String query = generateQuery(tags, 0);
+    List<Event> newEvents = dbHelper.getMatchingEvents(query);
+    for (Event e : newEvents){
+      addMarker(e);
     }
-    dbHelper.getMatchesAsync(search.toString(), this);
+  }
+
+  public String generateQuery(ArrayList<String> tags, int level) {
+    if (tags.size() == 0){
+      return "SELECT * FROM event";
+    }
+    StringBuilder query = new StringBuilder();
+    if (level != 0) query.append("(SELECT * FROM ");
+    else query.append("SELECT * FROM ");
+    if (level < (tags.size() - 1)) {
+      query.append(generateQuery(tags, level + 1));
+    }
+    if (level == 0) query.append("event INNER JOIN eventtagjoin ON event.eventId=eventtagjoin.event_id WHERE eventtagjoin.tag_name = '"+tags.get(level)+"' ");
+    else query.append("event INNER JOIN eventtagjoin ON event.eventId=eventtagjoin.event_id WHERE eventtagjoin.tag_name = '"+tags.get(level)+"') ");
+    return query.toString();
   }
 
   /**

@@ -6,21 +6,27 @@ import androidx.room.PrimaryKey;
 import com.example.alanrgan.illinihub.util.GPSUtils;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
+import java.util.Date;
+import java.util.UUID;
+
 @Entity
 public class Event {
 
-  public Event(String Title, String Description, double Latitude, double Longitude) {
-    title = Title;
-    description = Description;
-    latitude = Latitude;
-    longitude = Longitude;
-    tags = "";
+  public Event(String title, String description, double latitude, double longitude, Date startTime, Date endTime, String visibility) {
+    this.title = title;
+    this.description = description;
+    this.latitude = latitude;
+    this.longitude = longitude;
+    this.startTime = startTime;
+    this.endTime = endTime;
+    this.visibility = visibility;
+    this.tags = "";
   }
 
   public Event() {
   }
 
-  @PrimaryKey(autoGenerate = true)
+  @PrimaryKey()
   public int eventId;
 
   @ColumnInfo(name = "Title")
@@ -37,6 +43,15 @@ public class Event {
 
   @ColumnInfo(name = "tags(json)")
   public String tags;
+
+  @ColumnInfo(name = "StartTime")
+  public Date startTime;
+
+  @ColumnInfo(name = "EndTime")
+  public Date endTime;
+
+  @ColumnInfo(name = "Visibility")
+  public String visibility;
 
   public double distanceFrom(LatLng coord) {
     return GPSUtils.milesBetween(new LatLng(latitude, longitude), coord);

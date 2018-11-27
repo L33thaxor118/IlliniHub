@@ -135,6 +135,10 @@ public class FilterDrawerFragment extends Fragment {
     unselectedTags.add("Free");
     unselectedTags.add("GiveAway");
     unselectedTags.add("21+");
+    unselectedTags.add("Tech Talk");
+    unselectedTags.add("Ladies Night");
+    unselectedTags.add("Study Group");
+
     unselectedTagAdapter = new ArrayAdapter<String>(context, R.layout.tag, unselectedTags);
     selectedTagAdapter = new ArrayAdapter<String>(context, R.layout.tag, selectedTags);
 

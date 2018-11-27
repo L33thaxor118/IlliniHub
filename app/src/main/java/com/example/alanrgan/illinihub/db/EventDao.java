@@ -1,9 +1,11 @@
-package com.example.alanrgan.illinihub;
+package com.example.alanrgan.illinihub.db;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+
+import com.example.alanrgan.illinihub.Event;
 
 import java.util.ArrayList;
 import java.util.List;

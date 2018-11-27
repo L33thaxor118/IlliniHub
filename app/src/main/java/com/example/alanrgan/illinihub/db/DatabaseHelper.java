@@ -1,12 +1,17 @@
-package com.example.alanrgan.illinihub;
+package com.example.alanrgan.illinihub.db;
 
+import androidx.sqlite.db.SimpleSQLiteQuery;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.example.alanrgan.illinihub.Event;
+import com.example.alanrgan.illinihub.EventTagJoin;
+import com.example.alanrgan.illinihub.Tag;
 import com.example.alanrgan.illinihub.util.DBHelperAsyncResponse;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,6 +24,13 @@ public class DatabaseHelper {
     db = Database.getDatabase(context);
   }
 
+  public void addEvent(Event event, ArrayList<String> tags){
+    db.eventDao().insertAll(event);
+    for (String tag : tags){
+      EventTagJoin join = new EventTagJoin(event.eventId, tag);
+      db.eventTagJoinDao().insert(join);
+    }
+  }
   public void addEventAsync(Event event) {
     new DBInsertAsyncTask(db.eventDao()).execute(event);
   }
@@ -45,22 +57,36 @@ public class DatabaseHelper {
 
   public void populateWithSampleData() {
     db.eventDao().deleteAll();
-    for (int i = 0; i < 10; i++) {
-      Event e = new Event();
-      e.longitude = -88.227 + (float) i / 10000;
-      e.latitude = 40.107;
-      e.title = "sample " + String.valueOf(i);
-      e.description = "this is a sample event";
-      ArrayList<String> tags = new ArrayList<String>();
-      if ((i % 2) == 0) tags.add("21+");
-      tags.add("Business");
-      tags.add("Food");
-      tags.add("Free");
-      tags.add("GiveAway");
-      String tagsJson = new Gson().toJson(tags);
-      e.tags = tagsJson;
-      new DBInsertAsyncTask(db.eventDao()).execute(e);
+    db.tagDao().deleteAll();
+    db.eventTagJoinDao().deleteAll();
+    Tag t1 = new Tag("Business");
+    Tag t2 = new Tag("21+");
+    Tag t3 = new Tag("Food");
+    Tag t4 = new Tag("Free");
+    Tag t5 = new Tag("Tech Talk");
+    Tag t6 = new Tag("Ladies Night");
+    Tag t7 = new Tag("Study Group");
+    Tag t8 = new Tag("GiveAway");
+    db.tagDao().insertTag(t1);
+    db.tagDao().insertTag(t2);
+    db.tagDao().insertTag(t3);
+    db.tagDao().insertTag(t4);
+    db.tagDao().insertTag(t5);
+    db.tagDao().insertTag(t6);
+    db.tagDao().insertTag(t7);
+    db.tagDao().insertTag(t8);
+
+    ArrayList<String> tags = new ArrayList<String>(Arrays.asList("Business", "21+", "Food", "Free", "Tech Talk", "Ladies Night", "Study Group", "GiveAway"));
+    for (int i = 0; i < 8; i++) {
+      Event e1 = new Event("Sample" + i, "test", 40.107560 + (double)i/10000, -88.228163, new Date(), new Date(),"Public");
+      e1.eventId = i;
+      ArrayList<String> current_tags = new ArrayList<String>(tags.subList(0,i+1));
+      addEvent(e1, current_tags);
     }
+  }
+  public List<Event> getMatchingEvents(String query){
+    SimpleSQLiteQuery q = new SimpleSQLiteQuery(query);
+    return db.eventTagJoinDao().getEventsByTag(q);
   }
 
   private static class DBInsertAsyncTask extends AsyncTask<Event, Void, Void> {
