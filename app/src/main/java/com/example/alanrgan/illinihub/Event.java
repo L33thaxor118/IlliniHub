@@ -6,11 +6,12 @@ import androidx.room.PrimaryKey;
 import com.example.alanrgan.illinihub.util.GPSUtils;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
+import java.io.Serializable;
+
 import java.util.Date;
 
 @Entity
-public class Event {
-
+public class Event implements Serializable {
   public Event(String title, String description, double latitude, double longitude, Date startTime, Date endTime, String visibility) {
     this.title = title;
     this.description = description;

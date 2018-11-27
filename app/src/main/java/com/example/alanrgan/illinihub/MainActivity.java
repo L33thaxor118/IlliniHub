@@ -26,7 +26,9 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 // MainActivity MUST implement FilterDrawerFragment listener interface
 // in order to communicate events
@@ -38,6 +40,7 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
   private View filterDrawer;
   private Polygon discoveryCircle;
   private List<Event> eventsWithinRadius = new ArrayList<>();
+  private Map<Long, Event> markerIdToEvent = new HashMap<>();
 
   private NotificationManager notificationManager;
 
@@ -85,7 +88,17 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
 
     radiusActionBar.onRadiusChange((obs, radius) -> renderDiscoveryRadius(radius));
 
-    map.addOnMapLongClickListener(point -> updateRadiusToPoint(point));
+    // Register radius refinement listener
+    map.addOnMapLongClickListener(this::updateRadiusToPoint);
+
+    map.setOnMarkerClickListener(marker -> {
+      Event event = markerIdToEvent.get(marker.getId());
+      if (event == null) return false;
+
+      System.out.println("Clicked on event " + event.title);
+
+      return false;
+    });
 
     // Start the polling after mapboxMap exists
     locationStore.run();
@@ -168,7 +181,9 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
   private Marker addMarker(Event event) {
     // TODO: Specify a MarkerColor attribute for each event, or convert the event category
     // to a MarkerColor
-    return addMarker(event.title, new LatLng(event.latitude, event.longitude));
+    Marker marker = addMarker(event.title, new LatLng(event.latitude, event.longitude));
+    markerIdToEvent.put(marker.getId(), event);
+    return marker;
   }
 
   private Marker addMarker(String title, LatLng position) {
@@ -218,6 +233,16 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
     }
 
     return map.addMarker(markerOptions);
+  }
+
+  private void removeMarker(Marker m) {
+    if (m != null) {
+      long markerId = m.getId();
+      if (map.getAnnotation(markerId) != null) {
+        map.removeMarker(m);
+        markerIdToEvent.remove(markerId);
+      }
+    }
   }
 
   /**
