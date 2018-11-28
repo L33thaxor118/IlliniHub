@@ -19,7 +19,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity android:name=".CreateEventActivity" />
+        <activity android:name=".SelectLocationActivity" />
+        <activity android:name=".SelectTagsActivity" />
+        <activity android:name=".ReviewNewEventActivity"></activity>
     </application>
 
 </manifest>

@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
+
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 
@@ -26,6 +28,7 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -301,7 +304,8 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
 
     FloatingActionButton createEventButton = findViewById(R.id.createEventButton);
     createEventButton.setOnClickListener(event -> {
-      // TODO: Launch / inflate CreateEvent view here
+      Intent intent = new Intent(this, CreateEventActivity.class);
+      startActivityForResult(intent,1);
     });
   }
 
@@ -358,4 +362,30 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
       addMarker(matches.get(i));
     }
   }
+
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (requestCode == 1) {
+      if (resultCode == RESULT_OK) {
+        double[] location = data.getDoubleArrayExtra(CreateEventActivity.LOCATION_EXTRA);
+        String title = data.getStringExtra(CreateEventActivity.TITLE_EXTRA);
+        String description = data.getStringExtra(CreateEventActivity.DESC_EXTRA);
+        Long startDate = data.getLongExtra(CreateEventActivity.START_TIME_EXTRA, 0);
+        Long endDate = data.getLongExtra(CreateEventActivity.END_TIME_EXTRA, 0);
+        ArrayList<String> tags = data.getStringArrayListExtra(CreateEventActivity.TAGS_EXTRA);
+        Date start = new Date(startDate);
+        Date end = new Date(endDate);
+        Event newEvent = new Event(title,description,location[0],location[1],start,end,"Public");
+        addMarker(newEvent);
+//        Log.i("9136319 lat", String.valueOf(location[0]));
+//        Log.i("9136319 long", String.valueOf(location[1]));
+//        Log.i("9136319 title", title);
+//        Log.i("9136319 desc", description);
+//        Log.i("9136319 startday", String.valueOf(startDate));
+//        Log.i("9136319 endday", String.valueOf(endDate));
+//        Log.i("9136319 tag0", tags.get(0));
+      }
+    }
+  }
+
 }
