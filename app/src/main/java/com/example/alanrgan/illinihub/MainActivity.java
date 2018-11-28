@@ -377,13 +377,7 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
         Date end = new Date(endDate);
         Event newEvent = new Event(title,description,location[0],location[1],start,end,"Public");
         addMarker(newEvent);
-//        Log.i("9136319 lat", String.valueOf(location[0]));
-//        Log.i("9136319 long", String.valueOf(location[1]));
-//        Log.i("9136319 title", title);
-//        Log.i("9136319 desc", description);
-//        Log.i("9136319 startday", String.valueOf(startDate));
-//        Log.i("9136319 endday", String.valueOf(endDate));
-//        Log.i("9136319 tag0", tags.get(0));
+        dbHelper.addEvent(newEvent, tags);
       }
     }
   }

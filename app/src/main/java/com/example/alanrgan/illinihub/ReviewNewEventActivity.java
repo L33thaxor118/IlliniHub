@@ -7,9 +7,12 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.GridView;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import java.util.ArrayList;
@@ -33,6 +36,8 @@ public class ReviewNewEventActivity extends AppCompatActivity implements View.On
   private String selectedTitle;
   private String selectedDescription;
 
+  private ArrayAdapter<String> selectedTagsAdapter;
+
   EditText startDateTextEdit;
   EditText endDateTextEdit;
   EditText startTimeTextEdit;
@@ -40,6 +45,9 @@ public class ReviewNewEventActivity extends AppCompatActivity implements View.On
   Button nextButton;
   EditText titleTextEdit;
   EditText descriptionTextEdit;
+  GridView tagView;
+  TextView lat;
+  TextView lon;
 
   String beginStartDate;
   String beginStartTime;
@@ -53,13 +61,15 @@ public class ReviewNewEventActivity extends AppCompatActivity implements View.On
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_review_new_event);
     Intent intent = getIntent();
-
     selectedTitle = intent.getStringExtra(SelectTagsActivity.TITLE_EXTRA);
     selectedDescription = intent.getStringExtra(SelectTagsActivity.DESC_EXTRA);
     selectedLocation = intent.getDoubleArrayExtra(SelectTagsActivity.LOCATION_EXTRA);
     selectedTags = intent.getStringArrayListExtra((SelectTagsActivity.TAGS_EXTRA));
     selectedStartDate = intent.getLongExtra(SelectTagsActivity.START_TIME_EXTRA, 0);
     selectedEndDate = intent.getLongExtra(SelectTagsActivity.END_TIME_EXTRA, 0);
+    tagView = (GridView) findViewById(R.id.tagView);
+    selectedTagsAdapter = new ArrayAdapter<>(this, R.layout.tag, selectedTags);
+    tagView.setAdapter(selectedTagsAdapter);
 
     nextButton = (Button)findViewById(R.id.nextButton);
     startDateTextEdit = (EditText) findViewById(R.id.startDate);
@@ -73,6 +83,10 @@ public class ReviewNewEventActivity extends AppCompatActivity implements View.On
     nextButton.setOnClickListener(this);
     titleTextEdit = (EditText) findViewById(R.id.title);
     descriptionTextEdit = (EditText) findViewById(R.id.description);
+    lat = (TextView)  findViewById(R.id.latitude);
+    lon = (TextView)  findViewById(R.id.longitude);
+    lat.setText(String.valueOf(selectedLocation[0]));
+    lon.setText(String.valueOf(selectedLocation[1]));
 
     titleTextEdit.setText(selectedTitle);
     descriptionTextEdit.setText(selectedDescription);
