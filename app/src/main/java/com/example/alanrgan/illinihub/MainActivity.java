@@ -1,5 +1,6 @@
 package com.example.alanrgan.illinihub;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
@@ -41,6 +42,7 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
   private Polygon discoveryCircle;
   private List<Event> eventsWithinRadius = new ArrayList<>();
   private Map<Long, Event> markerIdToEvent = new HashMap<>();
+  private List<String> currentTags = new ArrayList<>();
 
   private NotificationManager notificationManager;
 
@@ -95,13 +97,15 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
       Event event = markerIdToEvent.get(marker.getId());
       if (event == null) return false;
 
-      System.out.println("Clicked on event " + event.title);
+      EventPreviewFragment.show(this, event);
 
-      return false;
+      return true;
     });
 
     // Start the polling after mapboxMap exists
     locationStore.run();
+
+    renderDiscoveryRadius(radiusActionBar.getRadius());
   }
 
   @Override
@@ -137,13 +141,28 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
     discoveryCircle = map.addPolygon(circleOptions);
     radiusActionBar.updateRadius(radius);
 
+    notifyEventsInCircle(location);
+  }
+
+  private void notifyEventsInCircle() {
+    Location location = locationComponent.getLastKnownLocation();
+    notifyEventsInCircle(location);
+  }
+
+  /**
+   * Notify user of all new events within discovery circle that have tags according to the
+   * applied filter.
+   *
+   */
+  private void notifyEventsInCircle(Location location) {
     eventsWithinRadius.clear();
 
     // Each time the radius is redrawn, we must search through all events
     // and determine which ones are within the radius and populate the list accordingly
-    dbHelper.getAll().forEach(event -> {
+    markerIdToEvent.entrySet().forEach(entry -> {
+      Event event = entry.getValue();
       double distFromUser = event.distanceFrom(new LatLng(location));
-      if (distFromUser <= radius) {
+      if (distFromUser <= radiusActionBar.getRadius()) {
         eventsWithinRadius.add(event);
       }
     });
@@ -279,19 +298,32 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
     });
   }
 
+  private void clearAllMarkers() {
+    for (Long markerId : markerIdToEvent.keySet()) {
+      Marker marker = (Marker) map.getAnnotation(markerId);
+      if (marker != null) {
+        map.removeMarker(marker);
+      }
+    }
+
+    markerIdToEvent.clear();
+  }
+
   /**
    * This method is called by FilterDrawerFragment when the ArrayList containing current tags is updated.
    * @param tags
    */
   @Override
   public void updateFilter(List<String> tags) {
-    map.clear();
-    //dbHelper.getMatchesAsync(search.toString(), this);
+    currentTags = tags;
+    clearAllMarkers();
     String query = generateQuery(tags, 0);
     List<Event> newEvents = dbHelper.getMatchingEvents(query);
-    for (Event e : newEvents){
+    for (Event e : newEvents) {
       addMarker(e);
     }
+
+    notifyEventsInCircle();
   }
 
   public String generateQuery(List<String> tags, int level) {

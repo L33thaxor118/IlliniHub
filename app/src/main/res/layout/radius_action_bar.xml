@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <RelativeLayout
         android:orientation="horizontal"
         android:id="@+id/content"
@@ -9,12 +10,15 @@
 
         <Button
             android:id="@+id/minusButton"
+            style="@style/AppTheme.PlusMinusButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:background="@color/plusMinusGray"
+            android:insetTop="0dp"
+            app:cornerRadius="0dp"
+            android:insetBottom="0dp"
             android:text="-"
-            android:textColor="@android:color/white"
-            android:textSize="22sp" />
+            android:textSize="22sp"
+            app:backgroundTint="@color/plusMinusGray" />
 
         <TextView
             android:id="@+id/radiusLabel"
@@ -34,13 +38,15 @@
             android:id="@+id/plusButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_toRightOf="@+id/radiusLabel"
             android:layout_marginEnd="0dp"
             android:layout_marginRight="0dp"
-            android:background="@color/plusMinusGray"
+            android:layout_toRightOf="@+id/radiusLabel"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
             android:text="+"
-            android:textColor="@android:color/white"
-            android:textSize="22sp" />
+            android:textSize="22sp"
+            app:backgroundTint="@color/plusMinusGray"
+            app:cornerRadius="0dp" />
 
     </RelativeLayout>
 </merge>
