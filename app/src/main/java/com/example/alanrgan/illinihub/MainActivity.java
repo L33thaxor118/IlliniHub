@@ -1,6 +1,5 @@
 package com.example.alanrgan.illinihub;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
@@ -97,7 +96,7 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
       Event event = markerIdToEvent.get(marker.getId());
       if (event == null) return false;
 
-      EventPreviewFragment.show(this, event);
+      markerAlert = EventPreviewFragment.show(this, event);
 
       return true;
     });

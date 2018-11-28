@@ -5,6 +5,7 @@
     xmlns:mapbox="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/main_view"
     tools:context=".MainActivity">
 
     <com.mapbox.mapboxsdk.maps.MapView
@@ -94,4 +95,5 @@
         android:name="com.example.alanrgan.illinihub.FilterDrawerFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
