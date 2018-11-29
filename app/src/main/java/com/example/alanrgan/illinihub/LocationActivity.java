@@ -1,6 +1,8 @@
 package com.example.alanrgan.illinihub;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -17,6 +19,7 @@ import com.mapbox.android.core.location.LocationEnginePriority;
 import com.mapbox.android.core.location.LocationEngineProvider;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.location.LocationComponent;
+import com.mapbox.mapboxsdk.location.modes.CameraMode;
 import com.mapbox.mapboxsdk.location.modes.RenderMode;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
@@ -33,6 +36,8 @@ public abstract class LocationActivity extends AppCompatActivity
 
   protected LocationComponent locationComponent;
   protected LocationEngine locationEngine;
+
+  protected AlertDialog markerAlert;
 
   private void initMapView() {
     Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
@@ -94,7 +99,7 @@ public abstract class LocationActivity extends AppCompatActivity
     locationComponent = mapboxMap.getLocationComponent();
     locationComponent.activateLocationComponent(this);
     locationComponent.setLocationComponentEnabled(true);
-    //locationComponent.setCameraMode(CameraMode.TRACKING);
+    locationComponent.setCameraMode(CameraMode.TRACKING);
     locationComponent.setRenderMode(RenderMode.NORMAL);
   }
 
@@ -126,6 +131,9 @@ public abstract class LocationActivity extends AppCompatActivity
   protected void onDestroy() {
     super.onDestroy();
     mapView.onDestroy();
+    if (markerAlert != null) {
+      markerAlert.dismiss();
+    }
   }
 
   @Override

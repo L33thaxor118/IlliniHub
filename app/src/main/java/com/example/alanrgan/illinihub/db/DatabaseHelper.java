@@ -51,6 +51,10 @@ public class DatabaseHelper {
     return db.eventDao().getMatches(search);
   }
 
+  public List<String> getTagsForEvent(int id)  {
+    return db.eventTagJoinDao().getTagsForEvent(id);
+  }
+
   public List<Event> getAll() {
     return db.eventDao().getAll();
   }
@@ -76,10 +80,18 @@ public class DatabaseHelper {
     db.tagDao().insertTag(t7);
     db.tagDao().insertTag(t8);
 
-    ArrayList<String> tags = new ArrayList<String>(Arrays.asList("Business", "21+", "Food", "Free", "Tech Talk", "Ladies Night", "Study Group", "GiveAway"));
+    ArrayList<String> tags = new ArrayList<>(Arrays.asList("Business", "21+", "Food", "Free", "Tech Talk", "Ladies Night", "Study Group", "GiveAway"));
     for (int i = 0; i < 8; i++) {
-      Event e1 = new Event("Sample" + i, "test", 40.107560 + (double)i/10000, -88.228163, new Date(), new Date(),"Public");
-      ArrayList<String> current_tags = new ArrayList<String>(tags.subList(0,i+1));
+      Event e1 = new Event.Builder()
+          .withTitle("Sample" + i)
+          .withDescription("test")
+          .withLocation(40.107560 + (double)i/10000, -88.228163)
+          .withTime(new Date(), new Date())
+          .withVisibility("Public")
+          .withHostname("Illini Union Board")
+          .build();
+
+      ArrayList<String> current_tags = new ArrayList<>(tags.subList(0,i+1));
       addEvent(e1, current_tags);
     }
   }
