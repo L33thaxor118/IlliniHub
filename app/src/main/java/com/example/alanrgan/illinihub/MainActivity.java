@@ -33,7 +33,6 @@ import java.util.Map;
 // MainActivity MUST implement FilterDrawerFragment listener interface
 // in order to communicate events
 public class MainActivity extends LocationActivity implements FilterDrawerFragment.OnFragmentInteractionListener, DBHelperAsyncResponse {
-  private LocationStore locationStore;
   private RadiusActionBar radiusActionBar;
   private SlideUp slideUp;
   private MapboxMap map;
@@ -56,7 +55,6 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    locationStore = new LocationStore();
     notificationManager = new NotificationManager(getApplicationContext());
 
     radiusActionBar = findViewById(R.id.radiusActionBar);
@@ -67,20 +65,24 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
   }
 
   @Override
+  protected void onNewIntent(Intent newIntent) {
+    super.onNewIntent(newIntent);
+    setIntent(newIntent);
+
+    // Show event details fragment if activity is triggered by a
+    Event event = (Event) newIntent.getSerializableExtra("notificationEvent");
+    if (event != null) {
+      EventDetailsFragment.show(this, event);
+    }
+  }
+
+  @Override
   public void onMapReady(final MapboxMap mapboxMap) {
     super.onMapReady(mapboxMap);
 
     map = mapboxMap;
 
     // The map will be created AFTER the user grants location permissions
-
-    // Register a listener for async data loading
-    locationStore.onDataUpdated((obj, coord) -> {
-      // All UI modifications need to be run on the UI thread with
-      // the following function
-      runOnUiThread(() -> addMarker("Async marker", coord, MarkerColor.BLUE));
-    });
-
     //Creating markers with events retrieved from Database
     List<Event> dbEvents = dbHelper.getAll();
     for (int i = 0; i < dbEvents.size(); i++) {
@@ -100,9 +102,6 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
 
       return true;
     });
-
-    // Start the polling after mapboxMap exists
-    locationStore.run();
 
     renderDiscoveryRadius(radiusActionBar.getRadius());
   }
@@ -176,16 +175,12 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
       // TODO: Keep track of whether or not a user has been notified about a specific event
 
       Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-      String title;
-      String content;
-      if (eventsWithinRadius.size() == 1) {
-        Event event = eventsWithinRadius.get(0);
-        title = "Found a nearby event";
-        content = String.format("[%s]", event.title);
-      } else {
-        title = String.format("Found %d nearby events", eventsWithinRadius.size());
-        content = "Tap to view event details";
-      }
+      Event event = eventsWithinRadius.get(0);
+
+      intent.putExtra("notificationEvent", event);
+
+      String title = "Found a nearby event";
+      String content = String.format("[%s]", event.title) + "\nTap to view event details";
 
       notificationManager.showNotification(title, content, intent);
     }

@@ -10,7 +10,7 @@ import com.example.alanrgan.illinihub.Event;
 import com.example.alanrgan.illinihub.EventTagJoin;
 import com.example.alanrgan.illinihub.Tag;
 
-@androidx.room.Database(entities = {Event.class, Tag.class, EventTagJoin.class}, version = 6)
+@androidx.room.Database(entities = {Event.class, Tag.class, EventTagJoin.class}, version = 7)
 @TypeConverters({DateTypeConverter.class})
 public abstract class Database extends RoomDatabase {
     public abstract EventDao eventDao();

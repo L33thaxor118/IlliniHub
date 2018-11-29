@@ -1,19 +1,14 @@
 package com.example.alanrgan.illinihub;
 
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
 
 public class EventPreviewFragment {
 
@@ -37,21 +32,7 @@ public class EventPreviewFragment {
     Button button = view.findViewById(R.id.eventPreviewDetailsButton);
     button.setOnClickListener(evt -> {
       alert.dismiss();
-
-      EventDetailsFragment fragment = EventDetailsFragment.newInstance(event);
-
-      FragmentTransaction transaction = parent.getSupportFragmentManager().beginTransaction();
-      transaction.replace(R.id.main_view, fragment, "event_details@" + event.eventId);
-      transaction.addToBackStack(null);
-      transaction.commit();
-
-      // Hide FABs
-
-      FloatingActionButton createEventButton = parent.findViewById(R.id.createEventButton);
-      createEventButton.hide();
-
-      FloatingActionButton recenterButton = parent.findViewById(R.id.recenterButton);
-      recenterButton.hide();
+      EventDetailsFragment.show(parent, event);
     });
 
     Button closeButton = view.findViewById(R.id.eventPreviewCloseButton);
