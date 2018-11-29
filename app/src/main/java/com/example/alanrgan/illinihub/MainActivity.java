@@ -375,7 +375,15 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
         ArrayList<String> tags = data.getStringArrayListExtra(CreateEventActivity.TAGS_EXTRA);
         Date start = new Date(startDate);
         Date end = new Date(endDate);
-        Event newEvent = new Event(title,description,location[0],location[1],start,end,"Public");
+
+        Event newEvent = new Event.Builder()
+          .withTitle(title)
+          .withDescription(description)
+          .withLocation(location[0], location[1])
+          .withTime(start, end)
+          .withVisibility("Public")
+          .build();
+
         addMarker(newEvent);
         dbHelper.addEvent(newEvent, tags);
       }
