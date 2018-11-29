@@ -61,6 +61,10 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     startTimeTextEdit.setOnClickListener(this);
     endTimeTextEdit.setOnClickListener(this);
     nextButton.setOnClickListener(this);
+
+
+    Button cancelButton = findViewById(R.id.cancel_create_event);
+    cancelButton.setOnClickListener(evt -> finish());
   }
 
   @Override
