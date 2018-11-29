@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ReviewNewEventActivity">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/mainlayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/add_title_text"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="Event Title"
+            android:layout_marginTop="35dp"
+            android:layout_marginLeft="10dp"
+            android:textSize="20dp">
+        </TextView>
+        <EditText
+            android:id="@+id/title"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/add_title_text"
+            android:layout_alignBaseline="@id/add_title_text"
+            />
+        <TextView
+            android:id="@+id/add_description_text"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="Description"
+            android:layout_below="@id/add_title_text"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"
+            android:textSize="20dp"/>
+        <EditText
+            android:id="@+id/description"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/add_description_text"
+            android:layout_alignBaseline="@id/add_description_text"
+            android:inputType="textMultiLine"
+            />
+
+        <TextView
+            android:id="@+id/add_startDate_text"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="Start Date"
+            android:layout_below="@id/description"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="10dp"
+            android:textSize="20dp"/>
+        <EditText
+            android:id="@+id/startDate"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:textSize="15dp"
+            android:layout_toRightOf="@id/add_startDate_text"
+            android:layout_alignBaseline="@id/add_startDate_text"
+            android:editable="false"
+            android:focusable="false"/>
+        <TextView
+            android:id="@+id/add_startTime_text"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="Start Time"
+            android:layout_below="@id/startDate"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="10dp"
+            android:textSize="20dp"/>
+        <EditText
+            android:id="@+id/startTime"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:textSize="15dp"
+            android:layout_toRightOf="@id/add_startTime_text"
+            android:layout_alignBaseline="@id/add_startTime_text"
+            android:editable="false"
+            android:focusable="false"/>
+        <TextView
+            android:id="@+id/add_endDate_text"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="End Date"
+            android:layout_below="@id/startTime"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="10dp"
+            android:textSize="20dp"/>
+        <EditText
+            android:id="@+id/endDate"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:textSize="15dp"
+            android:layout_toRightOf="@id/add_endDate_text"
+            android:layout_alignBaseline="@id/add_endDate_text"
+            android:editable="false"
+            android:focusable="false"/>
+
+        <TextView
+            android:id="@+id/add_endTime_text"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="End Time"
+            android:layout_below="@id/endDate"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="10dp"
+            android:textSize="20dp"/>
+        <EditText
+            android:id="@+id/endTime"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:textSize="15dp"
+            android:layout_toRightOf="@id/add_endTime_text"
+            android:layout_alignBaseline="@id/add_endTime_text"
+            android:editable="false"
+            android:focusable="false"/>
+
+        <TextView
+            android:id="@+id/location_text"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="Location"
+            android:layout_below="@id/endTime"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="10dp"
+            android:textSize="20dp"/>
+
+        <TextView
+            android:id="@+id/latitude"
+            android:layout_width="30dp"
+            android:layout_height="20dp"
+            android:layout_below="@id/endTime"
+            android:layout_alignBaseline="@id/location_text"
+            android:layout_marginRight="10dp"
+            android:layout_toRightOf="@id/location_text"
+            android:text="latitude here"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/longitude"
+            android:layout_width="30dp"
+            android:layout_height="20dp"
+            android:layout_below="@id/endTime"
+            android:layout_alignBaseline="@id/location_text"
+            android:layout_marginRight="10dp"
+            android:layout_toRightOf="@id/latitude"
+            android:text="longitude here"
+            android:textSize="18sp" />
+        <TextView
+            android:id="@+id/tags_text"
+            android:layout_marginTop="20dp"
+            android:layout_width="120dp"
+            android:text="Tags"
+            android:layout_marginLeft="10dp"
+            android:layout_height="50dp"
+            android:textSize="20dp"
+            android:layout_below="@id/location_text"/>
+
+        <GridView
+            android:layout_margin="10dp"
+            android:id="@+id/tagView"
+            android:layout_below="@id/tags_text"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:columnWidth="90dp"
+            android:numColumns="auto_fit"
+            android:verticalSpacing="10dp"
+            android:horizontalSpacing="10dp"
+            android:stretchMode="columnWidth"
+            android:gravity="center">
+        </GridView>
+        <Button
+            android:id="@+id/nextButton"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:text="Finish"
+            android:layout_alignRight="@id/tagView"
+            android:layout_below="@id/tagView"
+            />
+
+    </RelativeLayout>
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
