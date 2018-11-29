@@ -58,6 +58,7 @@ public class ReviewNewEventActivity extends AppCompatActivity implements View.On
   private int mEndYear, mEndMonth, mEndDay, mEndHour, mEndMinute;
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    setTitle("Review Information");
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_review_new_event);
     Intent intent = getIntent();

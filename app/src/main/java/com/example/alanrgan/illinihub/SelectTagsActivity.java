@@ -32,6 +32,7 @@ public class SelectTagsActivity extends AppCompatActivity implements FilterDrawe
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    setTitle("Select Event Tags");
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_select_tags);
 

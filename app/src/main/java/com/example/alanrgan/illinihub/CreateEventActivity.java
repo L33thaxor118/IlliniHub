@@ -48,6 +48,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    setTitle("New Event General Info");
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_create_event);
     nextButton = (Button)findViewById(R.id.nextButton);

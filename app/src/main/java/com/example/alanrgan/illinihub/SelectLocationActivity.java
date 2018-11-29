@@ -51,6 +51,7 @@ public class SelectLocationActivity extends LocationActivity implements OnMapRea
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    setTitle("Select Event Location");
     super.onCreate(savedInstanceState);
     Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
     setContentView(R.layout.activity_select_location);

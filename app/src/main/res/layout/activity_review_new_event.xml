@@ -24,9 +24,9 @@
         <EditText
             android:id="@+id/title"
             android:layout_width="250dp"
-            android:layout_height="35dp"
+            android:layout_height="wrap_content"
             android:layout_toRightOf="@id/add_title_text"
-            android:layout_alignTop="@id/add_title_text"
+            android:layout_alignBaseline="@id/add_title_text"
             />
         <TextView
             android:id="@+id/add_description_text"
@@ -42,7 +42,7 @@
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/add_description_text"
-            android:layout_alignTop="@id/add_description_text"
+            android:layout_alignBaseline="@id/add_description_text"
             android:inputType="textMultiLine"
             />
 
@@ -61,7 +61,7 @@
             android:layout_height="40dp"
             android:textSize="15dp"
             android:layout_toRightOf="@id/add_startDate_text"
-            android:layout_alignTop="@id/add_startDate_text"
+            android:layout_alignBaseline="@id/add_startDate_text"
             android:editable="false"
             android:focusable="false"/>
         <TextView
@@ -79,7 +79,7 @@
             android:layout_height="40dp"
             android:textSize="15dp"
             android:layout_toRightOf="@id/add_startTime_text"
-            android:layout_alignTop="@id/add_startTime_text"
+            android:layout_alignBaseline="@id/add_startTime_text"
             android:editable="false"
             android:focusable="false"/>
         <TextView
@@ -97,7 +97,7 @@
             android:layout_height="40dp"
             android:textSize="15dp"
             android:layout_toRightOf="@id/add_endDate_text"
-            android:layout_alignTop="@id/add_endDate_text"
+            android:layout_alignBaseline="@id/add_endDate_text"
             android:editable="false"
             android:focusable="false"/>
 
@@ -116,7 +116,7 @@
             android:layout_height="40dp"
             android:textSize="15dp"
             android:layout_toRightOf="@id/add_endTime_text"
-            android:layout_alignTop="@id/add_endTime_text"
+            android:layout_alignBaseline="@id/add_endTime_text"
             android:editable="false"
             android:focusable="false"/>
 
@@ -132,24 +132,25 @@
 
         <TextView
             android:id="@+id/latitude"
-            android:text="latitude here"
-            android:layout_height="20dp"
             android:layout_width="30dp"
+            android:layout_height="20dp"
             android:layout_below="@id/endTime"
-            android:layout_alignTop="@id/location_text"
-            android:layout_toRightOf="@id/location_text"
+            android:layout_alignBaseline="@id/location_text"
             android:layout_marginRight="10dp"
-            />
+            android:layout_toRightOf="@id/location_text"
+            android:text="latitude here"
+            android:textSize="18sp" />
+
         <TextView
             android:id="@+id/longitude"
-            android:text="longitude here"
-            android:layout_height="20dp"
             android:layout_width="30dp"
+            android:layout_height="20dp"
             android:layout_below="@id/endTime"
-            android:layout_alignTop="@id/location_text"
-            android:layout_toRightOf="@id/latitude"
+            android:layout_alignBaseline="@id/location_text"
             android:layout_marginRight="10dp"
-            />
+            android:layout_toRightOf="@id/latitude"
+            android:text="longitude here"
+            android:textSize="18sp" />
         <TextView
             android:id="@+id/tags_text"
             android:layout_marginTop="20dp"
@@ -161,10 +162,11 @@
             android:layout_below="@id/location_text"/>
 
         <GridView
+            android:layout_margin="10dp"
             android:id="@+id/tagView"
             android:layout_below="@id/tags_text"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="200dp"
             android:columnWidth="90dp"
             android:numColumns="auto_fit"
             android:verticalSpacing="10dp"
