@@ -272,6 +272,19 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
           // to let the user drag to show/hide the view.
           .withSlideFromOtherView(findViewById(R.id.bottomSlideHandle))
           .build();
+
+    slideUp.addSlideListener((SlideUp.Listener.Slide) percent -> {
+      FloatingActionButton createEventButton = findViewById(R.id.createEventButton);
+      FloatingActionButton recenterButton = findViewById(R.id.recenterButton);
+
+      if (percent == 0) {
+        createEventButton.hide();
+        recenterButton.hide();
+      } else {
+        createEventButton.show();
+        recenterButton.show();
+      }
+    });
   }
 
   private void initializeFabs() {
