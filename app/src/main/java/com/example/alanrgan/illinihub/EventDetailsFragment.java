@@ -1,5 +1,6 @@
 package com.example.alanrgan.illinihub;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 public class EventDetailsFragment extends Fragment {
   private Event event;
+  private EventDetailsListener mListener;
 
   public static EventDetailsFragment newInstance(Event event) {
     EventDetailsFragment fragment = new EventDetailsFragment();
@@ -88,6 +90,16 @@ public class EventDetailsFragment extends Fragment {
     String dateString = new SimpleDateFormat("EEEE, MMMM dd").format(event.startTime);
     dateLabel.setText(dateString);
 
+    TextView thumbsUpCtLabel = getView().findViewById(R.id.event_thumbs_up_count);
+    thumbsUpCtLabel.setText(Integer.toString(event.thumbsCt));
+
+    ImageView thumbsImage = getView().findViewById(R.id.event_thumbs_up);
+    thumbsImage.setOnClickListener(evt -> {
+      event.thumbsCt += 1;
+      mListener.setThumbCount(event.eventId, event.thumbsCt + 1);
+      thumbsUpCtLabel.setText(Integer.toString(event.thumbsCt + 1));
+    });
+
     TextView timeLabel = getView().findViewById(R.id.event_time_label);
     SimpleDateFormat timeFormatter = new SimpleDateFormat("h:mm aaa");
     timeLabel.setText(String.format("%s - %s",
@@ -95,6 +107,7 @@ public class EventDetailsFragment extends Fragment {
         timeFormatter.format(event.endTime))
     );
 
+    // Create static map image
     Point eventPt = Point.fromLngLat(event.longitude, event.latitude);
 
     MapboxStaticMap staticImage = MapboxStaticMap.builder()
@@ -133,5 +146,21 @@ public class EventDetailsFragment extends Fragment {
   public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                            Bundle savedInstanceState) {
     return inflater.inflate(R.layout.event_details, container, false);
+  }
+
+  @Override
+  public void onAttach(Context context) {
+    super.onAttach(context);
+
+    if (context instanceof EventDetailsListener) {
+      mListener = (EventDetailsListener) context;
+    } else {
+      throw new RuntimeException(context.toString()
+          + " must implement EventDetailsListener");
+    }
+  }
+
+  public interface EventDetailsListener {
+    void setThumbCount(int eventId, int thumbCount);
   }
 }

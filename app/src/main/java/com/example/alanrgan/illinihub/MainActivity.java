@@ -35,7 +35,8 @@ import java.util.Map;
 
 // MainActivity MUST implement FilterDrawerFragment listener interface
 // in order to communicate events
-public class MainActivity extends LocationActivity implements FilterDrawerFragment.OnFragmentInteractionListener, DBHelperAsyncResponse {
+public class MainActivity extends LocationActivity implements FilterDrawerFragment.OnFragmentInteractionListener,
+    DBHelperAsyncResponse, EventDetailsFragment.EventDetailsListener {
   private RadiusActionBar radiusActionBar;
   private SlideUp slideUp;
   private MapboxMap map;
@@ -46,6 +47,11 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
   private List<String> currentTags = new ArrayList<>();
 
   private NotificationManager notificationManager;
+
+  @Override
+  public void setThumbCount(int eventId, int thumbCount) {
+    dbHelper.setThumbCount(eventId, thumbCount);
+  }
 
   private enum MarkerColor {
     BLUE,

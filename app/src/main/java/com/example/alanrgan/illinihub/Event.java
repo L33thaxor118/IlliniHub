@@ -13,7 +13,7 @@ import java.util.Date;
 @Entity
 public class Event implements Serializable {
   public Event(String title, String description, double latitude, double longitude,
-               Date startTime, Date endTime, String visibility, String hostname) {
+               Date startTime, Date endTime, String visibility, String hostname, int thumbsCt) {
     this.title = title;
     this.description = description;
     this.hostname = hostname;
@@ -23,6 +23,7 @@ public class Event implements Serializable {
     this.endTime = endTime;
     this.visibility = visibility;
     this.tags = "";
+    this.thumbsCt = 0;
   }
 
   public Event() {
@@ -72,6 +73,11 @@ public class Event implements Serializable {
       return this;
     }
 
+    public Builder withThumbsCt(int ct) {
+      tmpEvent.thumbsCt = ct;
+      return this;
+    }
+
     public Event build() {
       return tmpEvent;
     }
@@ -106,6 +112,9 @@ public class Event implements Serializable {
 
   @ColumnInfo(name = "Visibility")
   public String visibility;
+
+  @ColumnInfo(name = "ThumbsCt")
+  public int thumbsCt;
 
   public double distanceFrom(LatLng coord) {
     return GPSUtils.milesBetween(new LatLng(latitude, longitude), coord);
