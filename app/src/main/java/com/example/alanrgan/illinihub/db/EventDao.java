@@ -4,6 +4,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.example.alanrgan.illinihub.Event;
 
@@ -24,6 +25,9 @@ public interface EventDao {
 
   @Insert
   long[] insertAll(Event... events);
+
+  @Query("UPDATE event SET thumbsCt = :count WHERE eventId = :id")
+  void setThumbCount(int id, int count);
 
   @Delete
   void delete(Event event);

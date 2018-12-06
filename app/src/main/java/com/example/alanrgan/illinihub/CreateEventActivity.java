@@ -75,15 +75,11 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
       mStartMonth = c.get(Calendar.MONTH);
       mStartDay = c.get(Calendar.DAY_OF_MONTH);
 
-      DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-          startDateTextEdit.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-          mStartDay = dayOfMonth;
-          mStartMonth = monthOfYear;
-          mStartYear = year;
-        }
+      DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year, monthOfYear, dayOfMonth) -> {
+        startDateTextEdit.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+        mStartDay = dayOfMonth;
+        mStartMonth = monthOfYear;
+        mStartYear = year;
       }, mStartYear, mStartMonth, mStartDay);
       datePickerDialog.show();
     }
@@ -92,14 +88,10 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
       mStartHour = c.get(Calendar.HOUR_OF_DAY);
       mStartMinute = c.get(Calendar.MINUTE);
 
-      TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
-
-        @Override
-        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-          startTimeTextEdit.setText(hourOfDay + ":" + minute);
-          mStartHour = hourOfDay;
-          mStartMinute = minute;
-        }
+      TimePickerDialog timePickerDialog = new TimePickerDialog(this, (view, hourOfDay, minute) -> {
+        startTimeTextEdit.setText(hourOfDay + ":" + minute);
+        mStartHour = hourOfDay;
+        mStartMinute = minute;
       }, mStartHour, mStartMinute, false);
       timePickerDialog.show();
     }
@@ -109,15 +101,11 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
       mEndMonth = c.get(Calendar.MONTH);
       mEndDay = c.get(Calendar.DAY_OF_MONTH);
 
-      DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-          endDateTextEdit.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-          mEndDay = dayOfMonth;
-          mEndMonth = monthOfYear;
-          mEndYear = year;
-        }
+      DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year, monthOfYear, dayOfMonth) -> {
+        endDateTextEdit.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+        mEndDay = dayOfMonth;
+        mEndMonth = monthOfYear;
+        mEndYear = year;
       }, mEndYear, mEndMonth, mEndDay);
       datePickerDialog.show();
     }
@@ -126,14 +114,10 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
       mEndHour = c.get(Calendar.HOUR_OF_DAY);
       mEndMinute = c.get(Calendar.MINUTE);
 
-      TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
-
-        @Override
-        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-          endTimeTextEdit.setText(hourOfDay + ":" + minute);
-          mEndHour = hourOfDay;
-          mEndMinute = minute;
-        }
+      TimePickerDialog timePickerDialog = new TimePickerDialog(this, (view, hourOfDay, minute) -> {
+        endTimeTextEdit.setText(hourOfDay + ":" + minute);
+        mEndHour = hourOfDay;
+        mEndMinute = minute;
       }, mEndHour, mEndMinute, false);
       timePickerDialog.show();
     }

@@ -88,6 +88,7 @@ public class DatabaseHelper {
           .withLocation(40.107560 + (double)i/10000, -88.228163)
           .withTime(new Date(), new Date())
           .withVisibility("Public")
+          .withThumbsCt(i)
           .withHostname("Illini Union Board")
           .build();
 
@@ -95,6 +96,11 @@ public class DatabaseHelper {
       addEvent(e1, current_tags);
     }
   }
+
+  public void setThumbCount(int eventId, int thumbCount) {
+    db.eventDao().setThumbCount(eventId, thumbCount);
+  }
+
   public List<Event> getMatchingEvents(String query){
     SimpleSQLiteQuery q = new SimpleSQLiteQuery(query);
     return db.eventTagJoinDao().getEventsByTag(q);
