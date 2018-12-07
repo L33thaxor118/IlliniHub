@@ -1,25 +1,24 @@
 package com.example.alanrgan.illinihub;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.leanback.widget.HorizontalGridView;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
-import java.util.ArrayList;
+import com.example.alanrgan.illinihub.util.ButtonAdapter;
+import com.example.alanrgan.illinihub.util.SortedArrayList;
+
 import java.util.Calendar;
 import java.util.Date;
 
-public class ReviewNewEventActivity extends AppCompatActivity implements View.OnClickListener{
+public class ReviewNewEventActivity extends AppCompatActivity implements View.OnClickListener, ButtonAdapter.ClickListener {
   //Intent keys
   public static final String LOCATION_EXTRA = "final_location";
   public static final String TITLE_EXTRA = "final_title";
@@ -31,12 +30,12 @@ public class ReviewNewEventActivity extends AppCompatActivity implements View.On
   //Intent data
   private long selectedStartDate;
   private long selectedEndDate;
-  private ArrayList<String> selectedTags;
+  private SortedArrayList<String> selectedTags = new SortedArrayList<>();
   private double[] selectedLocation;
   private String selectedTitle;
   private String selectedDescription;
 
-  private ArrayAdapter<String> selectedTagsAdapter;
+  private ButtonAdapter selectedTagsAdapter;
 
   EditText startDateTextEdit;
   EditText endDateTextEdit;
@@ -45,7 +44,7 @@ public class ReviewNewEventActivity extends AppCompatActivity implements View.On
   Button nextButton;
   EditText titleTextEdit;
   EditText descriptionTextEdit;
-  GridView tagView;
+  HorizontalGridView tagView;
   TextView lat;
   TextView lon;
 
@@ -65,11 +64,11 @@ public class ReviewNewEventActivity extends AppCompatActivity implements View.On
     selectedTitle = intent.getStringExtra(SelectTagsActivity.TITLE_EXTRA);
     selectedDescription = intent.getStringExtra(SelectTagsActivity.DESC_EXTRA);
     selectedLocation = intent.getDoubleArrayExtra(SelectTagsActivity.LOCATION_EXTRA);
-    selectedTags = intent.getStringArrayListExtra((SelectTagsActivity.TAGS_EXTRA));
+    selectedTags.addAll(intent.getStringArrayListExtra((SelectTagsActivity.TAGS_EXTRA)));
     selectedStartDate = intent.getLongExtra(SelectTagsActivity.START_TIME_EXTRA, 0);
     selectedEndDate = intent.getLongExtra(SelectTagsActivity.END_TIME_EXTRA, 0);
-    tagView = (GridView) findViewById(R.id.tagView);
-    selectedTagsAdapter = new ArrayAdapter<>(this, R.layout.tag, selectedTags);
+    tagView = (HorizontalGridView) findViewById(R.id.tagView);
+    selectedTagsAdapter = new ButtonAdapter(this, selectedTags, this);
     tagView.setAdapter(selectedTagsAdapter);
 
     nextButton = (Button)findViewById(R.id.nextButton);
@@ -198,4 +197,8 @@ public class ReviewNewEventActivity extends AppCompatActivity implements View.On
     }
   }
 
+  @Override
+  public void onButtonAdapterItemClick(ButtonAdapter adapter, String item, int position) {
+
+  }
 }
