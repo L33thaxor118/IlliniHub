@@ -94,6 +94,7 @@
         android:id="@+id/filterDrawer"
         android:name="com.example.alanrgan.illinihub.FilterDrawerFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="200dp"
+        app:layout_constraintBottom_toBottomOf="@+id/bottomSlideHandle"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

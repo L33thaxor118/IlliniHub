@@ -6,13 +6,18 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.leanback.widget.HorizontalGridView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.SearchView;
 
-import java.util.ArrayList;
+import com.example.alanrgan.illinihub.util.ButtonAdapter;
+import com.example.alanrgan.illinihub.util.SortedArrayList;
+
 import java.util.List;
 
 
@@ -24,7 +29,7 @@ import java.util.List;
  * Use the {@link FilterDrawerFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FilterDrawerFragment extends Fragment {
+public class FilterDrawerFragment extends Fragment implements ButtonAdapter.ClickListener {
   // TODO: Rename parameter arguments, choose names that match
   // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
   private static final String ARG_PARAM1 = "param1";
@@ -34,12 +39,12 @@ public class FilterDrawerFragment extends Fragment {
   // TODO: Rename and change types of parameters
   private String mParam1 = "Hello";
   private String mParam2;
-  private ArrayList<String> unselectedTags;
-  private ArrayList<String> selectedTags;
-  private ArrayAdapter<String> unselectedTagAdapter;
-  private ArrayAdapter<String> selectedTagAdapter;
-  private GridView unselectedTagsContainer;
-  private GridView selectedTagsContainer;
+  private SortedArrayList<String> unselectedTags;
+  private SortedArrayList<String> selectedTags;
+  private ButtonAdapter unselectedTagAdapter;
+  private ButtonAdapter selectedTagAdapter;
+  private HorizontalGridView unselectedTagsContainer;
+  private HorizontalGridView selectedTagsContainer;
 
   private OnFragmentInteractionListener mListener;
 
@@ -88,41 +93,44 @@ public class FilterDrawerFragment extends Fragment {
     // with getView() and findViewById()
     unselectedTagsContainer = getView().findViewById(R.id.unselected_tag_container);
     selectedTagsContainer = getView().findViewById(R.id.selected_tag_container);
+
+    unselectedTagsContainer.setHorizontalScrollBarEnabled(true);
+    selectedTagsContainer.setHorizontalScrollBarEnabled(true);
     unselectedTagsContainer.setAdapter(unselectedTagAdapter);
     selectedTagsContainer.setAdapter(selectedTagAdapter);
 
-    unselectedTagsContainer.setOnItemClickListener((parent, v, position, id) -> {
-      selectedTags.add(unselectedTags.get(position));
-      unselectedTags.remove(position);
-      unselectedTagAdapter.notifyDataSetChanged();
-      selectedTagAdapter.notifyDataSetChanged();
-      mListener.updateFilter(selectedTags);
-    });
+    SearchView searchView = (SearchView) getView().findViewById(R.id.tag_search);
+    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+      @Override
+      public boolean onQueryTextSubmit(String query) {
+        return false;
+      }
 
-    selectedTagsContainer.setOnItemClickListener((parent, v, position, id) -> {
-      unselectedTags.add(selectedTags.get(position));
-      selectedTags.remove(position);
-      unselectedTagAdapter.notifyDataSetChanged();
-      selectedTagAdapter.notifyDataSetChanged();
-      mListener.updateFilter(selectedTags);
+      @Override
+      public boolean onQueryTextChange(String newText) {
+        unselectedTagAdapter.filter(newText);
+        selectedTagAdapter.filter(newText);
+        System.out.println("QUERY CHANGED");
+        return false;
+      }
     });
   }
 
   @Override
   public void onAttach(Context context) {
-    unselectedTags = new ArrayList<>();
-    selectedTags = new ArrayList<>();
-    unselectedTags.add("Business");
-    unselectedTags.add("Food");
-    unselectedTags.add("Free");
-    unselectedTags.add("GiveAway");
-    unselectedTags.add("21+");
-    unselectedTags.add("Tech Talk");
-    unselectedTags.add("Ladies Night");
-    unselectedTags.add("Study Group");
+    unselectedTags = new SortedArrayList<>();
+    selectedTags = new SortedArrayList<>();
+    unselectedTags.insertSorted("Business");
+    unselectedTags.insertSorted("Food");
+    unselectedTags.insertSorted("Free");
+    unselectedTags.insertSorted("GiveAway");
+    unselectedTags.insertSorted("21+");
+    unselectedTags.insertSorted("Tech Talk");
+    unselectedTags.insertSorted("Ladies Night");
+    unselectedTags.insertSorted("Study Group");
 
-    unselectedTagAdapter = new ArrayAdapter<>(context, R.layout.tag, unselectedTags);
-    selectedTagAdapter = new ArrayAdapter<>(context, R.layout.tag, selectedTags);
+    unselectedTagAdapter = new ButtonAdapter(context, unselectedTags, this);
+    selectedTagAdapter = new ButtonAdapter(context, selectedTags, this);
 
     super.onAttach(context);
 
@@ -139,6 +147,23 @@ public class FilterDrawerFragment extends Fragment {
   public void onDetach() {
     super.onDetach();
     mListener = null;
+  }
+
+  @Override
+  public void onButtonAdapterItemClick(ButtonAdapter adapter, String item, int position) {
+    if (adapter.equals(selectedTagAdapter)) {
+      System.out.println("Clicked on Item");
+      unselectedTags.insertSorted(selectedTags.get(position));
+      selectedTags.remove(position);
+    } else if (adapter.equals(unselectedTagAdapter)) {
+      System.out.println("Clicked on Item");
+      selectedTags.insertSorted(unselectedTags.get(position));
+      unselectedTags.remove(position);
+    }
+
+    unselectedTagAdapter.notifyDataSetChanged();
+    selectedTagAdapter.notifyDataSetChanged();
+    mListener.updateFilter(selectedTags);
   }
 
   /**

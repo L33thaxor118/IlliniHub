@@ -7,7 +7,7 @@ android {
     }
     defaultConfig {
         applicationId "com.example.alanrgan.illinihub"
-        minSdkVersion 15
+        minSdkVersion 17
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -48,6 +48,7 @@ dependencies {
     }
     implementation "com.github.mancj:SlideUp-Android:2.2.8"
     implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'androidx.leanback:leanback:1.0.0'
     implementation 'androidx.room:room-runtime:2.0.0-rc01'
     annotationProcessor 'androidx.room:room-compiler:2.0.0-rc01'
     androidTestImplementation 'androidx.room:room-testing:2.0.0-rc01'
