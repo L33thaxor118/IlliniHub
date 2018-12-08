@@ -388,6 +388,7 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
           .withLocation(location[0], location[1])
           .withTime(start, end)
           .withVisibility("Public")
+          .withHostname("User")
           .build();
 
         addMarker(newEvent);

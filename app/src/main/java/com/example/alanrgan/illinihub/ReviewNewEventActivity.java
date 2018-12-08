@@ -2,21 +2,34 @@ package com.example.alanrgan.illinihub;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.leanback.widget.HorizontalGridView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.alanrgan.illinihub.util.ButtonAdapter;
 import com.example.alanrgan.illinihub.util.SortedArrayList;
+import com.mapbox.api.geocoding.v5.GeocodingCriteria;
+import com.mapbox.api.geocoding.v5.MapboxGeocoding;
+import com.mapbox.api.geocoding.v5.models.CarmenFeature;
+import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
+import com.mapbox.core.exceptions.ServicesException;
+import com.mapbox.geojson.Point;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class ReviewNewEventActivity extends AppCompatActivity implements View.OnClickListener, ButtonAdapter.ClickListener {
   //Intent keys
@@ -41,12 +54,11 @@ public class ReviewNewEventActivity extends AppCompatActivity implements View.On
   EditText endDateTextEdit;
   EditText startTimeTextEdit;
   EditText endTimeTextEdit;
+  EditText location;
   Button nextButton;
   EditText titleTextEdit;
   EditText descriptionTextEdit;
   HorizontalGridView tagView;
-  TextView lat;
-  TextView lon;
 
   String beginStartDate;
   String beginStartTime;
@@ -64,7 +76,10 @@ public class ReviewNewEventActivity extends AppCompatActivity implements View.On
     selectedTitle = intent.getStringExtra(SelectTagsActivity.TITLE_EXTRA);
     selectedDescription = intent.getStringExtra(SelectTagsActivity.DESC_EXTRA);
     selectedLocation = intent.getDoubleArrayExtra(SelectTagsActivity.LOCATION_EXTRA);
+
+    if (intent.getStringArrayListExtra((SelectTagsActivity.TAGS_EXTRA)) != null)
     selectedTags.addAll(intent.getStringArrayListExtra((SelectTagsActivity.TAGS_EXTRA)));
+
     selectedStartDate = intent.getLongExtra(SelectTagsActivity.START_TIME_EXTRA, 0);
     selectedEndDate = intent.getLongExtra(SelectTagsActivity.END_TIME_EXTRA, 0);
     tagView = (HorizontalGridView) findViewById(R.id.tagView);
@@ -83,10 +98,8 @@ public class ReviewNewEventActivity extends AppCompatActivity implements View.On
     nextButton.setOnClickListener(this);
     titleTextEdit = (EditText) findViewById(R.id.title);
     descriptionTextEdit = (EditText) findViewById(R.id.description);
-    lat = (TextView)  findViewById(R.id.latitude);
-    lon = (TextView)  findViewById(R.id.longitude);
-    lat.setText(String.valueOf(selectedLocation[0]));
-    lon.setText(String.valueOf(selectedLocation[1]));
+    location = (EditText) findViewById(R.id.location);
+    makeGeocodeSearch(new LatLng(selectedLocation[0],selectedLocation[1]));
 
     titleTextEdit.setText(selectedTitle);
     descriptionTextEdit.setText(selectedDescription);
@@ -201,4 +214,43 @@ public class ReviewNewEventActivity extends AppCompatActivity implements View.On
   public void onButtonAdapterItemClick(ButtonAdapter adapter, String item, int position) {
 
   }
+
+
+  private void makeGeocodeSearch(LatLng latLng) {
+    try {
+
+      MapboxGeocoding client = MapboxGeocoding.builder()
+              .accessToken(getString(R.string.mapbox_access_token))
+              .query(Point.fromLngLat(latLng.getLongitude(), latLng.getLatitude()))
+              .geocodingTypes(GeocodingCriteria.TYPE_ADDRESS)
+              .mode(GeocodingCriteria.MODE_PLACES)
+              .build();
+      client.enqueueCall(new Callback<GeocodingResponse>() {
+        @Override
+        public void onResponse(Call<GeocodingResponse> call,
+                               Response<GeocodingResponse> response) {
+          List<CarmenFeature> results = response.body().features();
+          if (results.size() > 0) {
+            // Get the first Feature from the successful geocoding response
+            CarmenFeature feature = results.get(0);
+            location.setText(feature.placeName());
+            Log.i("Carmen",feature.placeName());
+            //animateCameraToNewPosition(latLng);
+          } else {
+            Toast.makeText(ReviewNewEventActivity.this, "No Results",
+                    Toast.LENGTH_SHORT).show();
+          }
+        }
+
+        @Override
+        public void onFailure(Call<GeocodingResponse> call, Throwable throwable) {
+          Log.e("geocode","Geocoding Failure: " + throwable.getMessage());
+        }
+      });
+    } catch (ServicesException servicesException) {
+      Log.e("geocode","Error geocoding: " + servicesException.toString());
+      servicesException.printStackTrace();
+    }
+  }
+
 }
