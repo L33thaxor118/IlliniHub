@@ -2,8 +2,17 @@ package com.example.alanrgan.illinihub;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.mapbox.api.geocoding.v5.GeocodingCriteria;
+import com.mapbox.api.geocoding.v5.MapboxGeocoding;
+import com.mapbox.api.geocoding.v5.models.CarmenFeature;
+import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
+import com.mapbox.core.exceptions.ServicesException;
+import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
@@ -19,7 +28,9 @@ import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -47,6 +58,8 @@ public class SelectLocationActivity extends LocationActivity implements OnMapRea
   private MapboxMap mapboxMap;
   private Marker marker;
   private Button nextButton;
+  private AutoCompleteTextView geoCodeView;
+
 
 
   @Override
@@ -67,6 +80,8 @@ public class SelectLocationActivity extends LocationActivity implements OnMapRea
     mapView.getMapAsync(this);
     nextButton = (Button) findViewById(R.id.nextButton);
     nextButton.setOnClickListener(this);
+    geoCodeView = (AutoCompleteTextView) findViewById(R.id.autoComplete);
+
   }
 
   @Override
@@ -91,9 +106,49 @@ public class SelectLocationActivity extends LocationActivity implements OnMapRea
   public void onMapClick(@NonNull LatLng point) {
     ValueAnimator markerAnimator = ObjectAnimator.ofObject(marker, "position",
             new LatLngEvaluator(), marker.getPosition(), point);
+    makeGeocodeSearch(point);
     markerAnimator.setDuration(1000);
     markerAnimator.start();
   }
+
+
+  private void makeGeocodeSearch(LatLng latLng) {
+    try {
+
+      MapboxGeocoding client = MapboxGeocoding.builder()
+              .accessToken(getString(R.string.mapbox_access_token))
+              .query(Point.fromLngLat(latLng.getLongitude(), latLng.getLatitude()))
+              .geocodingTypes(GeocodingCriteria.TYPE_ADDRESS)
+              .mode(GeocodingCriteria.MODE_PLACES)
+              .build();
+      client.enqueueCall(new Callback<GeocodingResponse>() {
+        @Override
+        public void onResponse(Call<GeocodingResponse> call,
+                               Response<GeocodingResponse> response) {
+          List<CarmenFeature> results = response.body().features();
+          if (results.size() > 0) {
+            // Get the first Feature from the successful geocoding response
+            CarmenFeature feature = results.get(0);
+            geoCodeView.setText(feature.placeName());
+            Log.i("Carmen",feature.placeName());
+            //animateCameraToNewPosition(latLng);
+          } else {
+            Toast.makeText(SelectLocationActivity.this, "No Results",
+                    Toast.LENGTH_SHORT).show();
+          }
+        }
+
+        @Override
+        public void onFailure(Call<GeocodingResponse> call, Throwable throwable) {
+          Log.e("geocode","Geocoding Failure: " + throwable.getMessage());
+        }
+      });
+    } catch (ServicesException servicesException) {
+      Log.e("geocode","Error geocoding: " + servicesException.toString());
+      servicesException.printStackTrace();
+    }
+  }
+
 
   @Override
   public void onClick(View v){
