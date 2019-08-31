@@ -15,10 +15,11 @@ Create your own persistent event by clicking the '+' button.
 ![alt text](https://github.com/L33thaxor118/Illinihub/blob/master/screenshots/Screenshot_20181207-232548_IlliniHub.jpg)
 
 ## Event Filtering
-Swipe up the filter drawer and tap on some tags to enable or disable them. When a tag is enabled, only events containing that tag will be displayed.
+Swipe up the filter drawer and tap on some tags to enable or disable them. When a tag is enabled, only events containing that tag will be displayed. You can also search for tags with the searchbar.
+
+![alt text](https://github.com/L33thaxor118/Illinihub/blob/master/screenshots/Screenshot_20181207-232221_IlliniHub.jpg)
+![alt text](https://github.com/L33thaxor118/Illinihub/blob/master/screenshots/Screenshot_20181207-232325_IlliniHub.jpg)
 
 ## Screens
 ![alt text](https://github.com/L33thaxor118/Illinihub/blob/master/screenshots/Screenshot_20181128-215626_IlliniHub.jpg)
 ![alt text](https://github.com/L33thaxor118/Illinihub/blob/master/screenshots/Screenshot_20181128-221014_IlliniHub.jpg)
-![alt text](https://github.com/L33thaxor118/Illinihub/blob/master/screenshots/Screenshot_20181207-232221_IlliniHub.jpg)
-![alt text](https://github.com/L33thaxor118/Illinihub/blob/master/screenshots/Screenshot_20181207-232325_IlliniHub.jpg)
