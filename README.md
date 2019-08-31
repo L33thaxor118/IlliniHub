@@ -3,7 +3,7 @@
 #### Create and find nearby events in real time with a visual map interface. Demo video: https://www.youtube.com/watch?v=duyHozF6Rx0
 
 ## Create Events
-Create your own persistent event by clicking the '+' button.
+Create your own persistent event by clicking the '+' button.  
 ![alt text](https://github.com/L33thaxor118/Illinihub/blob/master/screenshots/Screenshot_20181207-232548_IlliniHub.jpg)
 
 ## Discovery Radius
