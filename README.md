@@ -12,5 +12,5 @@ Find events passively by expanding or shrinking the discovery radius. As you mov
 Swipe up the filter drawer and tap on some tags to enable or disable them. When a tag is enabled, only events containing that tag will be displayed.
 
 ## Screens
-![alt text](https://github.com/L33thaxor118/Illinihub/blob/master/Screenshot_20181128-215128_IlliniHub.jpg)
+![alt text](https://github.com/L33thaxor118/Illinihub/blob/master/screenshots/Screenshot_20181128-215128_IlliniHub.jpg)
 
