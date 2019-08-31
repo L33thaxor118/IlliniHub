@@ -4,6 +4,7 @@
 
 ## Create Events
 Create your own persistent event by clicking the '+' button.
+![alt text](https://github.com/L33thaxor118/Illinihub/blob/master/screenshots/Screenshot_20181207-232548_IlliniHub.jpg)
 
 ## Discovery Radius
 Find events passively by expanding or shrinking the discovery radius. As you move, you will get push notifications for events that fall into this radius.
