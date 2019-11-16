@@ -1,6 +1,7 @@
 package com.example.alanrgan.illinihub;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.example.alanrgan.illinihub.util.GPSUtils;
@@ -26,6 +27,7 @@ public class Event implements Serializable {
     this.thumbsCt = 0;
   }
 
+  @Ignore
   public Event() {
   }
 

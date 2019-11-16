@@ -98,10 +98,10 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
       addMarker(dbEvents.get(i));
     }
 
-    radiusActionBar.onRadiusChange((obs, radius) -> renderDiscoveryRadius(radius));
+//    radiusActionBar.onRadiusChange((obs, radius) -> renderDiscoveryRadius(radius));
 
     // Register radius refinement listener
-    map.addOnMapLongClickListener(this::updateRadiusToPoint);
+    map.addOnMapLongClickListener(this);
 
     map.setOnMarkerClickListener(marker -> {
       Event event = markerIdToEvent.get(marker.getId());
@@ -112,29 +112,31 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
       return true;
     });
 
-    renderDiscoveryRadius(radiusActionBar.getRadius());
+//    renderDiscoveryRadius(radiusActionBar.getRadius());
   }
+//
+//  @Override
+//  public void onLocationChanged(Location location) {
+//    renderDiscoveryRadius(location);
+//  }
 
-  @Override
-  public void onLocationChanged(Location location) {
-    renderDiscoveryRadius(location);
-  }
-
-  private void updateRadiusToPoint(LatLng point) {
+    @Override
+  public boolean onMapLongClick(LatLng point) {
     Location location = locationComponent.getLastKnownLocation();
     double radius = GPSUtils.milesBetween(point, new LatLng(location));
     if (radius <= RadiusActionBar.MAXIMUM_ALLOWED_RADIUS) {
-      renderDiscoveryRadius(location, radius);
+//      renderDiscoveryRadius(location, radius);
     }
+    return true;
   }
 
   private void renderDiscoveryRadius(double radius) {
-    renderDiscoveryRadius(locationComponent.getLastKnownLocation(), radius);
+//    renderDiscoveryRadius(locationComponent.getLastKnownLocation(), radius);
   }
 
   private void renderDiscoveryRadius(Location location) {
     double radius = radiusActionBar.getRadius();
-    renderDiscoveryRadius(location, radius);
+//    renderDiscoveryRadius(location, radius);
   }
 
   private void renderDiscoveryRadius(Location location, double radius) {

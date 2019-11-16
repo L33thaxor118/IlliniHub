@@ -84,10 +84,11 @@ public class SelectLocationActivity extends LocationActivity implements OnMapRea
 
   }
 
-  @Override
-  public void onLocationChanged(Location location) {
+//  @Override
+//  public void onLocationChanged(Location location) {
+//
+//  }
 
-  }
   @Override
   public void updateFilter(List<String> tags){
 
@@ -103,12 +104,13 @@ public class SelectLocationActivity extends LocationActivity implements OnMapRea
   }
 
   @Override
-  public void onMapClick(@NonNull LatLng point) {
+  public boolean onMapClick(@NonNull LatLng point) {
     ValueAnimator markerAnimator = ObjectAnimator.ofObject(marker, "position",
             new LatLngEvaluator(), marker.getPosition(), point);
     makeGeocodeSearch(point);
     markerAnimator.setDuration(1000);
     markerAnimator.start();
+    return true;
   }
 
 

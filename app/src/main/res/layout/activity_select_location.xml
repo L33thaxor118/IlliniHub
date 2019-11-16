@@ -29,7 +29,7 @@
         mapbox:mapbox_cameraTargetLat="40.107601"
         mapbox:mapbox_cameraTargetLng="-88.227133"
         mapbox:mapbox_cameraZoom="11"
-        mapbox:mapbox_styleUrl="mapbox://styles/mapbox/streets-v10" >
+        >
 
     </com.mapbox.mapboxsdk.maps.MapView>
     <Button
