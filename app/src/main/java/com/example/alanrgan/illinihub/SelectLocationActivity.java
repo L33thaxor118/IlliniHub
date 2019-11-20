@@ -82,10 +82,6 @@ public class SelectLocationActivity extends LocationActivity implements OnMapRea
 
   }
 
-//  @Override
-//  public void onLocationChanged(Location location) {
-//
-//  }
 
   @Override
   public void updateFilter(List<String> tags){
@@ -115,17 +111,17 @@ public class SelectLocationActivity extends LocationActivity implements OnMapRea
 
   private void makeGeocodeSearch(LatLng latLng) {
     try {
-
       MapboxGeocoding client = MapboxGeocoding.builder()
               .accessToken(getString(R.string.mapbox_access_token))
               .query(Point.fromLngLat(latLng.getLongitude(), latLng.getLatitude()))
               .geocodingTypes(GeocodingCriteria.TYPE_ADDRESS)
-              .mode(GeocodingCriteria.MODE_PLACES)
               .build();
+
       client.enqueueCall(new Callback<GeocodingResponse>() {
         @Override
         public void onResponse(Call<GeocodingResponse> call,
                                Response<GeocodingResponse> response) {
+          Log.d("GEOCODE", "response received");
           List<CarmenFeature> results = response.body().features();
           if (results.size() > 0) {
             // Get the first Feature from the successful geocoding response
@@ -141,7 +137,7 @@ public class SelectLocationActivity extends LocationActivity implements OnMapRea
 
         @Override
         public void onFailure(Call<GeocodingResponse> call, Throwable throwable) {
-          Log.e("geocode","Geocoding Failure: " + throwable.getMessage());
+          Log.d("geocode","Geocoding Failure: " + throwable.getMessage());
         }
       });
     } catch (ServicesException servicesException) {

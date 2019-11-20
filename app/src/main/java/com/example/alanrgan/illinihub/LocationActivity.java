@@ -69,7 +69,7 @@ public abstract class LocationActivity extends AppCompatActivity implements
   @Override
   public void onMapReady(@NonNull MapboxMap mapboxMap) {
     this.mapboxMap = mapboxMap;
-    mapboxMap.setStyle(Style.LIGHT, new Style.OnStyleLoaded() {
+    mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
       @Override
       public void onStyleLoaded(@NonNull Style style) {
         UiSettings settings = mapboxMap.getUiSettings();
