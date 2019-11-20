@@ -54,7 +54,6 @@ public class SelectLocationActivity extends LocationActivity implements OnMapRea
   private String selectedDescription;
   private ArrayList<String> selectedTags;
 
-  private MapView mapView;
   private MapboxMap mapboxMap;
   private Marker marker;
   private Button nextButton;
@@ -66,8 +65,10 @@ public class SelectLocationActivity extends LocationActivity implements OnMapRea
   protected void onCreate(Bundle savedInstanceState) {
     setTitle("Select Event Location");
     super.onCreate(savedInstanceState);
-    Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
     setContentView(R.layout.activity_select_location);
+    mapView = findViewById(R.id.mapView);
+    mapView.onCreate(savedInstanceState);
+    mapView.getMapAsync(this);
 
     Intent intent = getIntent();
     selectedTitle = intent.getStringExtra(CreateEventActivity.TITLE_EXTRA);
@@ -75,9 +76,6 @@ public class SelectLocationActivity extends LocationActivity implements OnMapRea
     selectedStartDate = intent.getLongExtra(CreateEventActivity.START_TIME_EXTRA, 0);
     selectedEndDate = intent.getLongExtra(CreateEventActivity.END_TIME_EXTRA, 0);
 
-    mapView = (MapView) findViewById(R.id.mapView);
-    mapView.onCreate(savedInstanceState);
-    mapView.getMapAsync(this);
     nextButton = (Button) findViewById(R.id.nextButton);
     nextButton.setOnClickListener(this);
     geoCodeView = (AutoCompleteTextView) findViewById(R.id.autoComplete);
@@ -96,6 +94,7 @@ public class SelectLocationActivity extends LocationActivity implements OnMapRea
 
   @Override
   public void onMapReady(MapboxMap mapboxMap) {
+    super.onMapReady(mapboxMap);
     SelectLocationActivity.this.mapboxMap = mapboxMap;
     marker = mapboxMap.addMarker(new MarkerOptions()
             .position(new LatLng(40.107601,-88.227133)));

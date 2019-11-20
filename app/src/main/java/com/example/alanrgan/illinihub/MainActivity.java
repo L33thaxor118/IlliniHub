@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import android.util.Log;
@@ -17,6 +19,7 @@ import com.example.alanrgan.illinihub.util.DBHelperAsyncResponse;
 
 import com.mancj.slideup.SlideUp;
 import com.mancj.slideup.SlideUpBuilder;
+import com.mapbox.android.core.location.LocationEngineResult;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.Marker;
@@ -64,6 +67,10 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+    mapView = findViewById(R.id.mapView);
+    mapView.onCreate(savedInstanceState);
+    mapView.getMapAsync(this);
     notificationManager = new NotificationManager(getApplicationContext());
 
     radiusActionBar = findViewById(R.id.radiusActionBar);
@@ -98,7 +105,7 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
       addMarker(dbEvents.get(i));
     }
 
-//    radiusActionBar.onRadiusChange((obs, radius) -> renderDiscoveryRadius(radius));
+    radiusActionBar.onRadiusChange((obs, radius) -> renderDiscoveryRadius(radius));
 
     // Register radius refinement listener
     map.addOnMapLongClickListener(this);
@@ -112,31 +119,37 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
       return true;
     });
 
-//    renderDiscoveryRadius(radiusActionBar.getRadius());
+    //renderDiscoveryRadius(radiusActionBar.getRadius());
   }
 //
-//  @Override
-//  public void onLocationChanged(Location location) {
-//    renderDiscoveryRadius(location);
-//  }
+  @Override
+  public void onLocationUpdated(LocationEngineResult result) {
+    super.onLocationUpdated(result);
+    renderDiscoveryRadius(result.getLastLocation());
+  }
 
-    @Override
+  @Override
+  public void onLocationUpdateFailure(@NonNull Exception exception) {
+    super.onLocationUpdateFailure(exception);
+  }
+
+  @Override
   public boolean onMapLongClick(LatLng point) {
     Location location = locationComponent.getLastKnownLocation();
     double radius = GPSUtils.milesBetween(point, new LatLng(location));
     if (radius <= RadiusActionBar.MAXIMUM_ALLOWED_RADIUS) {
-//      renderDiscoveryRadius(location, radius);
+      renderDiscoveryRadius(location, radius);
     }
     return true;
   }
 
   private void renderDiscoveryRadius(double radius) {
-//    renderDiscoveryRadius(locationComponent.getLastKnownLocation(), radius);
+    renderDiscoveryRadius(locationComponent.getLastKnownLocation(), radius);
   }
 
   private void renderDiscoveryRadius(Location location) {
     double radius = radiusActionBar.getRadius();
-//    renderDiscoveryRadius(location, radius);
+    renderDiscoveryRadius(location, radius);
   }
 
   private void renderDiscoveryRadius(Location location, double radius) {
