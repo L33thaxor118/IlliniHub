@@ -1,5 +1,7 @@
 package com.example.alanrgan.illinihub;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
@@ -103,7 +105,9 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
     super.onStart();
     FirebaseUser currentUser = mAuth.getCurrentUser();
     if (currentUser == null) {
-      Toast.makeText(this, "not signed in", Toast.LENGTH_SHORT).show();
+      Toast toast = Toast.makeText(this, "not signed in", Toast.LENGTH_SHORT);
+      toast.setGravity(Gravity.TOP, 0, 0);
+      toast.show();
     }
   }
 
@@ -340,9 +344,19 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
 
     FloatingActionButton createEventButton = findViewById(R.id.createEventButton);
     createEventButton.setOnClickListener(event -> {
+      handleCreateEventClick();
+    });
+  }
+
+  private void handleCreateEventClick() {
+    if (mAuth.getCurrentUser() == null) {
+      LoginDialog dialog = new LoginDialog();
+      dialog.show(fragmentManager, "login");
+
+    } else {
       Intent intent = new Intent(this, CreateEventActivity.class);
       startActivityForResult(intent,1);
-    });
+    }
   }
 
   private void clearAllMarkers() {

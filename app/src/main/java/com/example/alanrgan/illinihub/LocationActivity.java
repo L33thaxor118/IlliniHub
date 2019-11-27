@@ -7,6 +7,7 @@ import android.location.Location;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.util.Log;
 import android.view.Gravity;
@@ -53,11 +54,13 @@ public abstract class LocationActivity extends AppCompatActivity implements
   protected DatabaseHelper dbHelper;
   protected AlertDialog markerAlert;
   private LocationUpdater locationUpdater;
+  protected FragmentManager fragmentManager;
 
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    fragmentManager = getSupportFragmentManager();
     // Mapbox access token is configured here. This needs to be called either in your application
     // object or in the same activity which contains the mapview.
     Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
