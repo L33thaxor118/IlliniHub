@@ -6,7 +6,7 @@ android {
         exclude 'META-INF/proguard/androidx-annotations.pro'
     }
     defaultConfig {
-        applicationId "com.example.alanrgan.illinihub"
+        applicationId "com.example.illiniHub"
         minSdkVersion 17
         targetSdkVersion 28
         versionCode 1
@@ -54,6 +54,10 @@ dependencies {
     annotationProcessor 'androidx.room:room-compiler:2.0.0-rc01'
     androidTestImplementation 'androidx.room:room-testing:2.0.0-rc01'
 
+    //Firebase:
+    implementation 'com.google.firebase:firebase-auth:19.2.0'
+
+
 // Lifecycle components
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-rc01'
     annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.0.0-rc01'
@@ -66,3 +70,5 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
+
+apply plugin: 'com.google.gms.google-services'

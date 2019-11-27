@@ -11,12 +11,15 @@ import androidx.annotation.Nullable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.alanrgan.illinihub.util.CircleBuilder;
 import com.example.alanrgan.illinihub.util.GPSUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.example.alanrgan.illinihub.util.DBHelperAsyncResponse;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.mancj.slideup.SlideUp;
 import com.mancj.slideup.SlideUpBuilder;
 import com.mapbox.android.core.location.LocationEngineResult;
@@ -48,6 +51,8 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
   private List<Event> eventsWithinRadius = new ArrayList<>();
   private Map<Long, Event> markerIdToEvent = new HashMap<>();
   private List<String> currentTags = new ArrayList<>();
+  private FirebaseAuth mAuth;
+
 
   private NotificationManager notificationManager;
 
@@ -67,6 +72,7 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    mAuth = FirebaseAuth.getInstance();
     setContentView(R.layout.activity_main);
     mapView = findViewById(R.id.mapView);
     mapView.onCreate(savedInstanceState);
@@ -89,6 +95,15 @@ public class MainActivity extends LocationActivity implements FilterDrawerFragme
     Event event = (Event) newIntent.getSerializableExtra("notificationEvent");
     if (event != null) {
       EventDetailsFragment.show(this, event);
+    }
+  }
+
+  @Override
+  protected void onStart() {
+    super.onStart();
+    FirebaseUser currentUser = mAuth.getCurrentUser();
+    if (currentUser == null) {
+      Toast.makeText(this, "not signed in", Toast.LENGTH_SHORT).show();
     }
   }
 
